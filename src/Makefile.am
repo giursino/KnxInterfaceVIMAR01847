@@ -1,3 +1,3 @@
-bin_PROGRAMS=a.out
-a_out_SOURCES=01847-test.c
+bin_PROGRAMS=01847-test
+01847_test_SOURCES=01847-test.c
 
