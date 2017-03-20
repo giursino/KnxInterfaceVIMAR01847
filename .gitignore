@@ -16,3 +16,11 @@ Makefile.in
 /install-sh
 /missing
 /stamp-h1
+
+# my
+Makefile
+*.o
+config.*
+ltmain.sh
+.deps
+01847-test

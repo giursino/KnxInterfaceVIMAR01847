@@ -155,6 +155,98 @@ int main(int argc, char **argv)
 //		printf("write() wrote %d bytes\n", res);
 //	}
 
+
+	int len;
+
+#define TEST_TX
+
+#ifdef TEST_TX
+	/* Send a msg to the Device */
+	int sBuf[256];
+	i=0;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x13;
+	sBuf[i++] = 0x13;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x08;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x0b;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x03;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x29;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0xbc;
+	sBuf[i++] = 0xe0;
+	sBuf[i++] = 0x10;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x0c;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x81;
+	len=i;
+	printf("sBuf[%i]:", len);
+	for (i=0; i<len; i++){
+		printf("%.2X ", sBuf[i]);
+	}
+	printf("\n");
+
+	res = write(fd, sBuf, len);
+	if (res < 0) {
+		printf("Error: %d\n", errno);
+		perror("write");
+	} else {
+		printf("write() wrote %d bytes\n", res);
+	}
+
+	printf("Premere invio per continuare...");
+	scanf(sBuf);
+
+	i=0;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x13;
+	sBuf[i++] = 0x13;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x08;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x0b;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x03;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x29;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0xbc;
+	sBuf[i++] = 0xe0;
+	sBuf[i++] = 0x10;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x0c;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x80;
+	len=i;
+	printf("sBuf[%i]:", len);
+	for (i=0; i<len; i++){
+		printf("%.2X ", sBuf[i]);
+	}
+	printf("\n");
+
+	res = write(fd, sBuf, len);
+	if (res < 0) {
+		printf("Error: %d\n", errno);
+		perror("write");
+	} else {
+		printf("write() wrote %d bytes\n", res);
+	}
+
+	printf("Premere invio per continuare...");
+	scanf(sBuf);
+	printf("\n");
+#endif
+
     time_t timer;
     char timebuffer[26];
     struct tm* tm_info;
@@ -162,7 +254,7 @@ int main(int argc, char **argv)
 
 	/* Get a report from the device */
 	while (1) {
-	res = read(fd, buf, 32);
+	res = read(fd, buf, 64);
 	if (res < 0) {
 		perror("read");
 	} else {
@@ -171,25 +263,28 @@ int main(int argc, char **argv)
 		strftime(timebuffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
 		//printf("read() read %d bytes:\n\t", res);
 		printf("%s \t", timebuffer);
-		for (i = 0; i < res; i++) {
+		len=buf[2]+3;
+		for (i = 0; i < len; i++) {
 			switch (i) {
 				case 14:
+					// control field
 					printf("\t");
 					printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
 					break;
 				case 15:
 				case 16:
+					// src addr
 					printf(ANSI_COLOR_GREEN "%.2hhx " ANSI_COLOR_RESET, buf[i]);
 					break;
 				case 17:
 				case 18:
+					// dst addr
 					printf(ANSI_COLOR_RED "%.2hhx " ANSI_COLOR_RESET, buf[i]);
 					break;
 				case 19:
 				{
-					int len = buf[i] & 0x0F;
-					res=19+len+1+1;
-					printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, len);
+					// len
+					printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
 					break;
 				}
 				default:
