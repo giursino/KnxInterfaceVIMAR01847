@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 
 	printf("Get supported EMI Type\n");
 	printf("Premere invio per continuare...");
-	res=scanf("%d", sBuf);
+	getc(stdin);
 	// --> 01 13 09 00 08 00 01 0F 01 00 00 01
 	// <-- 01 13 0B 00 08 00 03 0F 02 00 00 01 xx xx
 	i=0;
@@ -214,7 +214,7 @@ int main(int argc, char **argv)
 
 	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
 	printf("Premere invio per continuare...");
-	res=scanf("%d", sBuf);
+	getc(stdin);
 	i=0;
 	// KNX HID Report Header
 	sBuf[i++] = 0x01; //ReportId
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
 
 	printf("Send A_GroupValueWrite to 0x0C00 with value OFF.\n");
 	printf("Premere invio per continuare...");
-	res=scanf("%d", sBuf);
+	getc(stdin);
 	i=0;
 	sBuf[i++] = 0x01;
 	sBuf[i++] = 0x13;
@@ -302,7 +302,7 @@ int main(int argc, char **argv)
 
 	printf("Busmonitor.\n");
 	printf("Premere invio per continuare...");
-	res=scanf("%d", sBuf);
+	getc(stdin);
 	printf("\n");
 #endif
 
@@ -325,9 +325,10 @@ int main(int argc, char **argv)
 		len=buf[2]+3;
 		for (i = 0; i < len; i++) {
 			switch (i) {
-				case 14:
+				case 13:
 					// control field
 					printf("\t");
+				case 14:
 					printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
 					break;
 				case 15:
