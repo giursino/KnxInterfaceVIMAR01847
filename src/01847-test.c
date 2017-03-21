@@ -163,19 +163,76 @@ int main(int argc, char **argv)
 #ifdef TEST_TX
 	/* Send a msg to the Device */
 	int sBuf[256];
+
+	printf("Get supported EMI Type\n");
+	printf("Premere invio per continuare...");
+	res=scanf("%d", sBuf);
+	// --> 01 13 09 00 08 00 01 0F 01 00 00 01
+	// <-- 01 13 0B 00 08 00 03 0F 02 00 00 01 xx xx
 	i=0;
-	sBuf[i++] = 0x01;
-	sBuf[i++] = 0x13;
-	sBuf[i++] = 0x13;
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x08;
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x0b;
-	sBuf[i++] = 0x01;
-	sBuf[i++] = 0x03;
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x29;
+	// KNX HID Report Header
+	sBuf[i++] = 0x01; //ReportId
+	sBuf[i++] = 0x13; //PacketInfo
+	sBuf[i++] = 0x09; //Datalength
+	// KNX HID Report Body
+	// KNX USB Transfer Protocol Header (only in start packet!)
+	sBuf[i++] = 0x00; //ProtocolVersion
+	sBuf[i++] = 0x08; //HeaderLength
+	sBuf[i++] = 0x00; //BodyLength
+	sBuf[i++] = 0x01; //    "
+	sBuf[i++] = 0x0F; //ProtocolId
+	sBuf[i++] = 0x01; //EMIID (cEMI)
+	sBuf[i++] = 0x00; //ManufacturerCode
+	sBuf[i++] = 0x00; //    "
+	// KNX USB Transfer Protocol Body
+	sBuf[i++] = 0x01; //EMIMessageCode (29=rx, 11=tx)
+	len=i;
+	printf("sBuf[%i]:", len);
+	for (i=0; i<len; i++){
+		printf("%.2X ", sBuf[i]);
+	}
+	printf("\n");
+
+	res = write(fd, sBuf, len);
+	if (res < 0) {
+		printf("Error: %d\n", errno);
+		perror("write");
+	} else {
+		printf("write() wrote %d bytes\n", res);
+	}
+	res = read(fd, buf, 64);
+	if (res < 0) {
+		perror("read");
+	} else {
+		len=buf[2]+3;
+		for (i = 0; i < len; i++) {
+			printf("%.2hhx ", buf[i]);
+		}
+		puts("");
+	}
+
+
+	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
+	printf("Premere invio per continuare...");
+	res=scanf("%d", sBuf);
+	i=0;
+	// KNX HID Report Header
+	sBuf[i++] = 0x01; //ReportId
+	sBuf[i++] = 0x13; //PacketInfo
+	sBuf[i++] = 0x13; //Datalength
+	// KNX HID Report Body
+	// KNX USB Transfer Protocol Header (only in start packet!)
+	sBuf[i++] = 0x00; //ProtocolVersion
+	sBuf[i++] = 0x08; //HeaderLength
+	sBuf[i++] = 0x00; //BodyLength
+	sBuf[i++] = 0x0b; //    "
+	sBuf[i++] = 0x01; //ProtocolId
+	sBuf[i++] = 0x03; //EMIID (cEMI)
+	sBuf[i++] = 0x00; //ManufacturerCode
+	sBuf[i++] = 0x00; //    "
+	// KNX USB Transfer Protocol Body
+	sBuf[i++] = 0x11; //EMIMessageCode (29=rx, 11=tx)
+	// Data
 	sBuf[i++] = 0x00;
 	sBuf[i++] = 0xbc;
 	sBuf[i++] = 0xe0;
@@ -201,9 +258,10 @@ int main(int argc, char **argv)
 		printf("write() wrote %d bytes\n", res);
 	}
 
-	printf("Premere invio per continuare...");
-	scanf(sBuf);
 
+	printf("Send A_GroupValueWrite to 0x0C00 with value OFF.\n");
+	printf("Premere invio per continuare...");
+	res=scanf("%d", sBuf);
 	i=0;
 	sBuf[i++] = 0x01;
 	sBuf[i++] = 0x13;
@@ -216,7 +274,7 @@ int main(int argc, char **argv)
 	sBuf[i++] = 0x03;
 	sBuf[i++] = 0x00;
 	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x29;
+	sBuf[i++] = 0x11;
 	sBuf[i++] = 0x00;
 	sBuf[i++] = 0xbc;
 	sBuf[i++] = 0xe0;
@@ -242,8 +300,9 @@ int main(int argc, char **argv)
 		printf("write() wrote %d bytes\n", res);
 	}
 
+	printf("Busmonitor.\n");
 	printf("Premere invio per continuare...");
-	scanf(sBuf);
+	res=scanf("%d", sBuf);
 	printf("\n");
 #endif
 
