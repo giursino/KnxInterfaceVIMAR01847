@@ -162,7 +162,7 @@ int main(int argc, char **argv)
 	int sBuf[256];
 
 	printf("Get supported EMI Type\n");
-	printf("Premere invio per continuare...");
+	printf("Press enter to continue...");
 	getc(stdin);
 	// --> 01 13 09 00 08 00 01 0F 01 00 00 01
 	// <-- 01 13 0B 00 08 00 03 0F 02 00 00 01 xx xx
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
 
 
 	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
-	printf("Premere invio per continuare...");
+	printf("Press enter to continue...");
 	getc(stdin);
 	i=0;
 	// KNX HID Report Header
@@ -257,7 +257,7 @@ int main(int argc, char **argv)
 
 
 	printf("Send A_GroupValueWrite to 0x0C00 with value OFF.\n");
-	printf("Premere invio per continuare...");
+	printf("Press enter to continue...");
 	getc(stdin);
 	i=0;
 	sBuf[i++] = 0x01;
@@ -298,7 +298,7 @@ int main(int argc, char **argv)
 	}
 
 	printf("Busmonitor.\n");
-	printf("Premere invio per continuare...");
+	printf("Press enter to continue...");
 	getc(stdin);
 	printf("\n");
 #endif
@@ -398,7 +398,8 @@ int main(int argc, char* argv[])
 	// Open the device using the VID, PID,
 	// and optionally the Serial number.
 	printf("hid_open...");
-	handle = hid_open(0xc251, 0x1101, NULL);  // 01847
+	//handle = hid_open(0xc251, 0x1101, NULL);  // 01847
+	handle = hid_open(0x24a0, 0x1101, NULL);  // 01847
 	printf("[handle=%p]\n", handle);
 	if (handle==NULL) {
 		perror("Cannot open the device");
@@ -447,7 +448,7 @@ int main(int argc, char* argv[])
 
 	// Send msg to device
 	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
-	printf("Premere invio per continuare...");
+	printf("Press enter to continue...");
 	getc(stdin);
 	i=0;
 	// KNX HID Report Header

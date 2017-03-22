@@ -7,8 +7,8 @@ AC_INIT(01847-test, 1.0)
 AC_CANONICAL_SYSTEM
 AM_INIT_AUTOMAKE()
 
-AC_CHECK_HEADERS([hidapi/hidapi.h])
-AC_CHECK_LIB(hidapi-hidraw, hid_write)
+AC_CHECK_LIB(hidapi-hidraw, hid_write, ,AC_MSG_ERROR([hidapi lib not found]))
+AC_CHECK_HEADER(hidapi/hidapi.h)
 
 AC_PROG_CC
 
