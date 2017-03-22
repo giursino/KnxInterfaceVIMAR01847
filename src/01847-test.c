@@ -1,14 +1,11 @@
 /*
- * Hidraw Userspace Example
+ * Applicativo di test per l'articolo 01847
  *
- * Copyright (c) 2010 Alan Ott <alan@signal11.us>
- * Copyright (c) 2010 Signal 11 Software
- *
- * The code may be used by anyone for any purpose,
- * and can serve as a starting point for developing
- * applications using hidraw.
+ * Copyright (c) 2017 Giuseppe Ursino
  */
 
+
+#if USE_HIDRAW
 /* Linux */
 #include <linux/types.h>
 #include <linux/input.h>
@@ -358,25 +355,199 @@ int main(int argc, char **argv)
 	close(fd);
 	return 0;
 }
+#endif
 
-const char *
-bus_str(int bus)
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <time.h>
+#include <hidapi/hidapi.h>
+
+
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_GREEN   "\x1b[32m"
+#define ANSI_COLOR_YELLOW  "\x1b[33m"
+#define ANSI_COLOR_BLUE    "\x1b[34m"
+#define ANSI_COLOR_MAGENTA "\x1b[35m"
+#define ANSI_COLOR_CYAN    "\x1b[36m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
+
+#define MAX_STR 255
+
+int main(int argc, char* argv[])
 {
-	switch (bus) {
-	case BUS_USB:
-		return "USB";
-		break;
-	case BUS_HIL:
-		return "HIL";
-		break;
-	case BUS_BLUETOOTH:
-		return "Bluetooth";
-		break;
-	case BUS_VIRTUAL:
-		return "Virtual";
-		break;
-	default:
-		return "Other";
-		break;
+	int res;
+	unsigned char buf[65];
+	wchar_t wstr[MAX_STR];
+	hid_device *handle;
+	int i;
+
+	printf("hid_init...\n");
+
+	// Initialize the hidapi library
+	res = hid_init();
+
+	// Open the device using the VID, PID,
+	// and optionally the Serial number.
+	printf("hid_open...");
+	handle = hid_open(0xc251, 0x1101, NULL);  // 01847
+	printf("[handle=%p]\n", handle);
+	if (handle==NULL) {
+		perror("Cannot open the device");
+		exit(1);
 	}
+
+
+	// Read the Manufacturer String
+	printf("hid_get_manufacturer_string...");
+	res = hid_get_manufacturer_string(handle, wstr, MAX_STR);
+	printf("%i\n", res);
+	wprintf(L"Manufacturer String: %s\n", wstr);
+
+	// Read the Product String
+	printf("hid_get_product_string...");
+	res = hid_get_product_string(handle, wstr, MAX_STR);
+	printf("%i\n", res);
+	wprintf(L"Product String: %s\n", wstr);
+
+	// Read the Serial Number String
+	printf("hid_get_serial_number_string...");
+	res = hid_get_serial_number_string(handle, wstr, MAX_STR);
+	printf("%i\n", res);
+	wprintf(L"Serial Number String: (%d) %s\n", wstr[0], wstr);
+
+	// Read Indexed String 1
+	printf("hid_get_indexed_string...");
+	res = hid_get_indexed_string(handle, 1, wstr, MAX_STR);
+	printf("%i\n", res);
+	wprintf(L"Indexed String 1: %s\n", wstr);
+
+#if 0
+	// Toggle LED (cmd 0x80). The first byte is the report number (0x0).
+	buf[0] = 0x0;
+	buf[1] = 0x80;
+	res = hid_write(handle, buf, 65);
+
+	// Request state (cmd 0x81). The first byte is the report number (0x0).
+	buf[0] = 0x0;
+	buf[1] = 0x81;
+	res = hid_write(handle, buf, 65);
+#endif
+	
+	unsigned char sBuf[256];
+	int len;
+
+	// Send msg to device
+	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
+	printf("Premere invio per continuare...");
+	getc(stdin);
+	i=0;
+	// KNX HID Report Header
+	sBuf[i++] = 0x01; //ReportId
+	sBuf[i++] = 0x13; //PacketInfo
+	sBuf[i++] = 0x13; //Datalength
+	// KNX HID Report Body
+	// KNX USB Transfer Protocol Header (only in start packet!)
+	sBuf[i++] = 0x00; //ProtocolVersion
+	sBuf[i++] = 0x08; //HeaderLength
+	sBuf[i++] = 0x00; //BodyLength
+	sBuf[i++] = 0x0b; //    "
+	sBuf[i++] = 0x01; //ProtocolId
+	sBuf[i++] = 0x03; //EMIID (cEMI)
+	sBuf[i++] = 0x00; //ManufacturerCode
+	sBuf[i++] = 0x00; //    "
+	// KNX USB Transfer Protocol Body
+	sBuf[i++] = 0x11; //EMIMessageCode (29=rx, 11=tx)
+	// Data
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0xbc;
+	sBuf[i++] = 0xe0;
+	sBuf[i++] = 0x10;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x0c;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x01;
+	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x81;
+	len=i;
+	printf("sBuf[%i]:", len);
+	for (i=0; i<len; i++){
+		printf("%.2X ", sBuf[i]);
+	}
+	printf("\n");
+
+	res = hid_write(handle, sBuf, len);
+	if (res < 0) {
+		printf("Error: %d\n", errno);
+		perror("write");
+	} else {
+		printf("write() wrote %d bytes\n", res);
+	}
+
+
+	// Read requested state
+	printf("hid_read...\n");
+	while(1) {
+		res = hid_read(handle, buf, 65);
+
+		// Print out the returned buffer.
+		if (res < 0) {
+			perror("read");
+		} 
+		else {
+			time_t timer;
+			char timebuffer[26];
+			struct tm* tm_info;
+			
+			time(&timer);
+			tm_info = localtime(&timer);
+			strftime(timebuffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
+			printf("%s \t", timebuffer);
+			int len=buf[2]+3;
+			for (i = 0; i < len; i++) {
+				switch (i) {
+					case 13:
+						// control field
+						printf("\t");
+					case 14:
+						printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+						break;
+					case 15:
+					case 16:
+						// src addr
+						printf(ANSI_COLOR_GREEN "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+						break;
+					case 17:
+					case 18:
+						// dst addr
+						printf(ANSI_COLOR_RED "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+						break;
+					case 19:
+					{
+						// len
+						printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+						break;
+					}
+					default:
+						printf("%.2hhx ", buf[i]);
+						break;
+				}
+			}
+			puts("");
+		}
+	}
+	
+	// Finalize the hidapi library
+	printf("hid_exit...\n");
+	res = hid_exit();
+
+	return 0;
 }
