@@ -4,6 +4,7 @@
  * Copyright (c) 2017 Giuseppe Ursino
  */
 
+#include "config.h"
 
 #if USE_HIDRAW
 /* Linux */
@@ -390,6 +391,8 @@ int main(int argc, char* argv[])
 	hid_device *handle;
 	int i;
 
+	printf("Welcome to %s.\n", PACKAGE_STRING);
+
 	printf("hid_init...\n");
 
 	// Initialize the hidapi library
@@ -398,13 +401,18 @@ int main(int argc, char* argv[])
 	// Open the device using the VID, PID,
 	// and optionally the Serial number.
 	printf("hid_open...");
-	//handle = hid_open(0xc251, 0x1101, NULL);  // 01847
-	handle = hid_open(0x24a0, 0x1101, NULL);  // 01847
-	printf("[handle=%p]\n", handle);
+	handle=NULL;
+	if (handle==NULL) {
+		handle = hid_open(0xc251, 0x1101, NULL);  // 01847 
+	}
+	if (handle==NULL) {
+		handle = hid_open(0x24a0, 0x1101, NULL);  // 01847
+	}
 	if (handle==NULL) {
 		perror("Cannot open the device");
 		exit(1);
 	}
+	printf("[handle=%p]\n", handle);
 
 
 	// Read the Manufacturer String
