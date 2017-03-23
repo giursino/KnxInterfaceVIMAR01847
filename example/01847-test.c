@@ -1,10 +1,28 @@
-/*
- * Applicativo di test per l'articolo 01847
- *
- * Copyright (c) 2017 Giuseppe Ursino
- */
+//******************************************************************************
+/// @file 01847-test.c
+/// @brief Applicativo di test per l'articolo 01847
+/// $Author$
+/// $Date$
+/// $Revision$
+///
+///
+/// @note La storia dello sviluppo del modulo è descritta in @ref revnote01847-test
+//******************************************************************************
+
+//
+// -----
+// $Id$
+// -----
+//
 
 
+/**
+*@page revnote01847-test Revision History del modulo 01847-test
+*@section revnote01847-test_rev0 giursino 23:40:27 23 mar 2017
+* - Creazione del modulo.
+*/
+
+//-START--------------------------- Definitions ------------------------------//
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,18 +36,41 @@
 #include "libknxusb.h"
 #include "01847-test.h"
 
+#ifdef LOCAL
+	#undef LOCAL
+#endif
+#define LOCAL static
+#ifdef GLOBAL
+	#undef GLOBAL
+#endif
+#define GLOBAL
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_GREEN   "\x1b[32m"
-#define ANSI_COLOR_YELLOW  "\x1b[33m"
-#define ANSI_COLOR_BLUE    "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-#define ANSI_COLOR_CYAN    "\x1b[36m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+//-END----------------------------- Definitions ------------------------------//
 
 
-int main(int argc, char* argv[])
-{
+//-START----------------------- Functions Declaration ------------------------//
+//-END------------------------- Functions Declaration ------------------------//
+
+
+//-START------------------------------ Const ---------------------------------//
+//-END-------------------------------- Const ---------------------------------//
+
+
+//-START----------------------------- Variables ------------------------------//
+//-PUBLIC-
+//-PRIVATE-
+//-END------------------------------ Variables -------------------------------//
+
+
+//-START------------------------------- ISR ----------------------------------//
+//-END--------------------------------- ISR ----------------------------------//
+
+
+//-START--------------------------- Functions --------------------------------//
+
+/// Funzione principale
+///
+int main(int argc, char* argv[]) {
 
 	printf("Welcome to %s.\n", PACKAGE_STRING);
 
@@ -43,3 +84,15 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+//-END----------------------------- Functions --------------------------------//
+
+
+
+
+
+
+
+
+
+
