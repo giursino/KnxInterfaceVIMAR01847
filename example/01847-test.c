@@ -16,6 +16,7 @@
 #include <hidapi/hidapi.h>
 #include "config.h"
 #include "libknxusb.h"
+#include "01847-test.h"
 
 
 #define ANSI_COLOR_RED     "\x1b[31m"

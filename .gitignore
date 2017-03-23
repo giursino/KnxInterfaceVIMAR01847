@@ -28,3 +28,4 @@ ltmain.sh
 *.la
 *.lo
 libtool
+*.tar.gz
