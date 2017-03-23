@@ -12,7 +12,7 @@ lib_LTLIBRARIES = libknxusb.la
 # All file are included in the distro
 libknxusb_la_SOURCES = \
 	libknxusb.c \
-	libknxusb.h 
+	libknxusb_priv.h 
  
 
 # Linker options

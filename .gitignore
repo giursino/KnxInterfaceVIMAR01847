@@ -24,3 +24,7 @@ config.*
 ltmain.sh
 .deps
 01847-test
+.libs
+*.la
+*.lo
+libtool
