@@ -482,7 +482,7 @@ int main(int argc, char* argv[])
 	sBuf[i++] = 0x10;
 	sBuf[i++] = 0x01;
 	sBuf[i++] = 0x0c;
-	sBuf[i++] = 0x00;
+	sBuf[i++] = 0x0a;
 	sBuf[i++] = 0x01;
 	sBuf[i++] = 0x00;
 	sBuf[i++] = 0x81;
