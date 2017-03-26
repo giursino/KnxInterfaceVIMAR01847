@@ -27,7 +27,8 @@
 #endif
 #define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
 
-#define PIPPO "baudo"
+/// Max length of cEmi message
+#define LKU_CEMI_MSG_LENGTH		64
 //-END----------------------------- Definitions ------------------------------//
 
 

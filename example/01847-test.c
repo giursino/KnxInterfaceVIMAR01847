@@ -74,13 +74,37 @@ int main(int argc, char* argv[]) {
 
 	printf("Welcome to %s.\n", PACKAGE_STRING);
 
-	uint8_t buf[3]= {1,2,3};
-	uint8_t dest[3]= {0,0,0};
+	hid_device* pDevice;
+	int res;
 
-	int res= LKU_LData2cEmi(buf, dest, 3);
+	res = LKU_Init(pDevice);
+	if (res < 0) {
+		perror("LKU_Init");
+		exit(1);
+	}
 
-	printf("res=%d...dest=%d %d %d\n", res, dest[0], dest[1], dest[2]);
+	uint8_t buf[8];
+	uint8_t i=0;
+	buf[i++] = 0xbc;
+	buf[i++] = 0x10;
+	buf[i++] = 0x01;
+	buf[i++] = 0x0c;
+	buf[i++] = 0x0a;
+	buf[i++] = 0xE1;
+	buf[i++] = 0x00;
+	buf[i++] = 0x81;
+	res = LKU_SendGroupValueWrite(pDevice, buf, i);
+	if (res < 0) {
+		perror("LKU_SendGroupValueWrite");
+		exit(1);
+	}
 
+
+	res = LKU_Deinit(pDevice);
+	if (res < 0) {
+		perror("LKU_Deinit");
+		exit(1);
+	}
 
 	return 0;
 }
