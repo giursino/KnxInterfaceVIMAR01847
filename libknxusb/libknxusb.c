@@ -84,11 +84,11 @@ GLOBAL int LKU_Init(hid_device* pDevice) {
 	}
 	pDevice=NULL;
 	if (pDevice==NULL) {
-		// home version
+		// work version
 		pDevice = hid_open(0xc251, 0x1101, NULL);  // 01847
 	}
 	if (pDevice==NULL) {
-		// work version
+		// home version
 		pDevice = hid_open(0x24a0, 0x1101, NULL);  // 01847
 	}
 	if (pDevice==NULL) {
