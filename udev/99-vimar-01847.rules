@@ -1,2 +1,2 @@
 # Set the access to VIMAR 01847 to "plugdev" group
-KERNEL=="hidraw*", ATTRS{idVendor}=="c251|24a0", ATTRS{idProduct}=="1101", MODE="0660", GROUP="plugdev"
+KERNEL=="hidraw*", ATTRS{idVendor}=="c251|24a0", ATTRS{idProduct}=="1101", MODE="0660", GROUP="plugdev", SYMLINK+="vimar-01847"
