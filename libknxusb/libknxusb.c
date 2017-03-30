@@ -124,6 +124,7 @@ GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u
 	int res, len;
 
 	len = LKU_LData2CEmi(pMsg, u8MsgLen, pMsgCEmi, LKU_CEMI_MSG_LENGTH);
+
 	res = hid_write(pDevice, pMsgCEmi, len);
 
 	return 0;
@@ -167,7 +168,7 @@ LOCAL int LKU_LData2CEmi(uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[5]&0x0F;
 	pMsgCEmi[i++] = pMsgLData[6];
 	pMsgCEmi[i++] = pMsgLData[7];
-	return i;
+	return i-1;
 }
 //-END----------------------------- Functions --------------------------------//
 
