@@ -9,15 +9,20 @@ AM_INIT_AUTOMAKE([subdir-objects])
 
 AM_CONFIG_HEADER(config.h)
 
+PKG_CHECK_MODULES([CMOCKA], [cmocka >= 0.0.1])
+
 AC_CHECK_LIB(hidapi-hidraw, hid_write, ,AC_MSG_ERROR([hidapi lib not found]))
 AC_CHECK_HEADER(hidapi/hidapi.h)
 
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
-AC_CONFIG_FILES(Makefile 
-		example/Makefile
-		libknxusb/Makefile
-		include/Makefile)
+AC_CONFIG_FILES(
+	Makefile 
+	example/Makefile
+	libknxusb/Makefile
+	include/Makefile
+	tests/Makefile
+)
 AC_OUTPUT
 

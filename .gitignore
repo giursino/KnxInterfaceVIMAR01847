@@ -29,3 +29,7 @@ ltmain.sh
 *.lo
 libtool
 *.tar.gz
+*.log
+*.trs
+test-driver
+tests/test_libknxusb
