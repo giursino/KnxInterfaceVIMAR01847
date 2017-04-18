@@ -33,3 +33,4 @@ libtool
 *.trs
 test-driver
 tests/test_libknxusb
+.dirstamp
