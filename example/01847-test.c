@@ -77,14 +77,16 @@ int main(int argc, char* argv[]) {
 	hid_device* pDevice;
 	int res;
 
-	res = LKU_Init(pDevice);
+	res = LKU_Init(&pDevice);
 	if (res < 0) {
 		perror("LKU_Init");
 		exit(1);
 	}
+	printf("File descriptor: %p.\n", pDevice);
 
 	uint8_t buf[8];
 	uint8_t i=0;
+	uint8_t len;
 	buf[i++] = 0xbc;
 	buf[i++] = 0x10;
 	buf[i++] = 0x01;
@@ -93,18 +95,24 @@ int main(int argc, char* argv[]) {
 	buf[i++] = 0xE1;
 	buf[i++] = 0x00;
 	buf[i++] = 0x81;
-	res = LKU_SendGroupValueWrite(pDevice, buf, i);
+	len=i;
+	res = LKU_SendGroupValueWrite(pDevice, buf, len);
 	if (res < 0) {
 		perror("LKU_SendGroupValueWrite");
 		exit(1);
 	}
-
+	printf("Sent msg: ");
+	for (i=0; i<len; i++){
+		printf("%.2X ", buf[i]);
+	}
+	printf(".\n");
 
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
 		perror("LKU_Deinit");
 		exit(1);
 	}
+	printf("Done.\n");
 
 	return 0;
 }

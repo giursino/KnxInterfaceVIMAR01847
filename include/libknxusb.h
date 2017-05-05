@@ -55,7 +55,7 @@ typedef enum {
 //-END------------------------------ Variables -------------------------------//
 
 //-START----------------------- Functions Declaration ------------------------//
-GLOBAL int LKU_Init(hid_device* pDevice);
+GLOBAL int LKU_Init(hid_device** pDevice);
 GLOBAL int LKU_Deinit(hid_device* pDevice);
 GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
 //-END------------------------- Functions Declaration ------------------------//

@@ -22,3 +22,5 @@ libknxusb_la_LDFLAGS =
 # to be searched for headers included in the source code.
 libknxusb_la_CPPFLAGS = -I$(top_srcdir)/include
 
+MAINTAINERCLEANFILES = Makefile.in
+

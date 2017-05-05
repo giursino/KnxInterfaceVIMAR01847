@@ -50,7 +50,7 @@
 
 
 //-START----------------------- Functions Declaration ------------------------//
-LOCAL int LKU_LData2CEmi(uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
+LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen);
 //-END------------------------- Functions Declaration ------------------------//
 
@@ -76,22 +76,22 @@ LOCAL int LKU_LData2CEmi(uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 /// @param 	pDevice return pointer to device handler created by library
 /// @return	0 on success and -1 on error
 ///
-GLOBAL int LKU_Init(hid_device* pDevice) {
+GLOBAL int LKU_Init(hid_device** pDevice) {
 	int res;
 	res = hid_init();
 	if (res < 0) {
 		return -1;
 	}
-	pDevice=NULL;
-	if (pDevice==NULL) {
+	*pDevice=NULL;
+	if (*pDevice==NULL) {
 		// work version
-		pDevice = hid_open(0xc251, 0x1101, NULL);  // 01847
+		*pDevice = hid_open(0xc251, 0x1101, NULL);  // 01847
 	}
-	if (pDevice==NULL) {
+	if (*pDevice==NULL) {
 		// home version
-		pDevice = hid_open(0x24a0, 0x1101, NULL);  // 01847
+		*pDevice = hid_open(0x24a0, 0x1101, NULL);  // 01847
 	}
-	if (pDevice==NULL) {
+	if (*pDevice==NULL) {
 		// cannot open the device
 		return -1;
 	}
@@ -127,12 +127,19 @@ GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u
 
 	res = hid_write(pDevice, pMsgCEmi, len);
 
-	return 0;
+	if (res==len) {
+		res=0;
+	}
+	else {
+		res=-1;
+	}
+
+	return res;
 }
 
 
 /// Convert L_DATA msg to cEmi msg
-LOCAL int LKU_LData2CEmi(uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
+LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen) {
 
 	if (u8MsgCEmiLen < u8MsgLDataLen + 19) {

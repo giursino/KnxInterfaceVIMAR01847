@@ -7,7 +7,7 @@
 # Because a.out is only a sample program we don't want it to be installed.
 # The 'noinst_' prefix indicates that the following targets are not to be
 # installed.
-noinst_PROGRAMS=01847-test
+noinst_PROGRAMS=01847-test 01847-test-nolib
 
 #######################################
 # Build information for each executable. The variable name is derived
@@ -33,3 +33,10 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 # Data files to be included in distro but not to be installed.
 EXTRA_DIST = 
+
+
+# Programma di test che non usa la libreria
+01847_test_nolib_SOURCES= \
+	01847-test-nolib.c 
+	
+MAINTAINERCLEANFILES = Makefile.in 01847-test 01847-test-nolib 
