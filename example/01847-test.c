@@ -84,6 +84,11 @@ int main(int argc, char* argv[]) {
 	}
 	printf("File descriptor: %p.\n", pDevice);
 
+	// Send msg to device
+	printf("\n");
+	printf("Send A_GroupValueWrite to 0x0C0A with value ON.\n");
+	printf("Press enter to continue...");
+	getc(stdin);
 	uint8_t buf[8];
 	uint8_t i=0;
 	uint8_t len;
@@ -96,6 +101,23 @@ int main(int argc, char* argv[]) {
 	buf[i++] = 0x00;
 	buf[i++] = 0x81;
 	len=i;
+	res = LKU_SendGroupValueWrite(pDevice, buf, len);
+	if (res < 0) {
+		perror("LKU_SendGroupValueWrite");
+		exit(1);
+	}
+	printf("Sent msg: ");
+	for (i=0; i<len; i++){
+		printf("%.2X ", buf[i]);
+	}
+	printf(".\n");
+
+	// Send msg to device
+	printf("\n");
+	printf("Send A_GroupValueWrite to 0x0C0A with value OFF.\n");
+	printf("Press enter to continue...");
+	getc(stdin);
+	buf[len-1] = 0x80;
 	res = LKU_SendGroupValueWrite(pDevice, buf, len);
 	if (res < 0) {
 		perror("LKU_SendGroupValueWrite");

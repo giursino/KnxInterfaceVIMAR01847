@@ -52,6 +52,7 @@
 //-START----------------------- Functions Declaration ------------------------//
 LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen);
+LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 //-END------------------------- Functions Declaration ------------------------//
 
 
@@ -134,6 +135,8 @@ GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u
 		res=-1;
 	}
 
+	DebugPrintMsg("hid_write", pMsgCEmi, len);
+
 	return res;
 }
 
@@ -175,7 +178,16 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[5]&0x0F;
 	pMsgCEmi[i++] = pMsgLData[6];
 	pMsgCEmi[i++] = pMsgLData[7];
-	return i-1;
+	return i;
+}
+
+LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
+	uint8_t i=0;
+	printf("%s: ", strprefix);
+	for (i=0; i<u8Len; i++){
+		printf("%.2X ", pMsg[i]);
+	}
+	printf(".\n");
 }
 //-END----------------------------- Functions --------------------------------//
 
