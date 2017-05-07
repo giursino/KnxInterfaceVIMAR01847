@@ -117,10 +117,59 @@ GLOBAL int LKU_Deinit(hid_device* pDevice) {
 
 /// Send A_GroupValueWrite message to knx bus
 /// @param 	pDevice	pointer to device handler
+/// @param  addr	dest group address
+/// @param  dpt		datapoint type
+/// @param  payload	datapoint payload
+/// @param  len		payload length
+/// @return	0 on success and -1 on error
+///
+GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
+		LKU_DPT_TYPE dpt, uint8_t* payload, uint8_t len) {
+	int res;
+	uint8_t msg[LKU_KNX_MSG_LENGTH];
+	uint8_t msglen;
+
+	msg[LKU_KNX_MSG_CTRLFIELD] = LKU_DEF_CTRLFIELD;
+	msg[LKU_KNX_MSG_SRCADDR1] = LKU_DEF_SRCADDR1;
+	msg[LKU_KNX_MSG_SRCADDR2] = LKU_DEF_SRCADDR2;
+	msg[LKU_KNX_MSG_DSTADDR1] = addr.byte[0];
+	msg[LKU_KNX_MSG_DSTADDR2] = addr.byte[1];
+	msg[LKU_KNX_MSG_NETFIELD] = LKU_DEF_DAF_GROUP;
+
+	if (dpt==LKU_DPT_6BIT) {
+		if (len!=1) return -1;
+		msg[LKU_KNX_MSG_LENFIELD] |= 1;
+	}
+	else if ((dpt>LKU_DPT_6BIT) && (dpt<LKU_DPT_MAX)) {
+		if (len!=dpt) return -1;
+		msg[LKU_KNX_MSG_LENFIELD] |= (dpt+1);
+	}
+	else {
+		return -1;
+	}
+
+	msg[LKU_KNX_MSG_APCIFIELD1] = (LKU_DEF_AGROUPWRITE & 0xFF00) << 8;
+	msg[LKU_KNX_MSG_APCIFIELD2] = (LKU_DEF_AGROUPWRITE & 0x00FF);
+	if (dpt==LKU_DPT_6BIT) {
+		msg[LKU_KNX_MSG_PAYLOAD0] |= (payload[0] & 0x3F);
+		msglen=LKU_KNX_MSG_APCIFIELD2+1;
+	}
+	else {
+		memcpy(&msg[LKU_KNX_MSG_PAYLOAD], payload, len);
+		msglen=LKU_KNX_MSG_APCIFIELD2+len;
+	}
+
+	res = LKU_SendRawMessage(pDevice, &msg, msglen);
+
+	return res;
+}
+
+/// Send a raw message to knx bus
+/// @param 	pDevice	pointer to device handler
 /// @param  pMsg	point to msg buffer
 /// @return	0 on success and -1 on error
 ///
-GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen) {
+GLOBAL int LKU_SendRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen) {
 	uint8_t pMsgCEmi[LKU_CEMI_MSG_LENGTH];
 	int res, len;
 

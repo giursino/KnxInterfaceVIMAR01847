@@ -32,17 +32,28 @@
 
 //-START------------------------------ Types ---------------------------------//
 typedef enum {
-	LKU_DPT_1xxx,
-	LKU_DPT_2xxx,
-	LKU_DPT_3xxx,
-	LKU_DPT_4xxx,
-	LKU_DPT_5xxx,
-	LKU_DPT_6xxx,
-	LKU_DPT_7xxx,
-	LKU_DPT_8xxx,
-	LKU_DPT_9xxx,
-	LKU_DPT_10xxx,
+	LKU_DPT_6BIT,
+	LKU_DPT_1BYTE,
+	LKU_DPT_2BYTE,
+	LKU_DPT_3BYTE,
+	LKU_DPT_4BYTE,
+	LKU_DPT_5BYTE,
+	LKU_DPT_6BYTE,
+	LKU_DPT_7BYTE,
+	LKU_DPT_8BYTE,
+	LKU_DPT_9BYTE,
+	LKU_DPT_10BYTE,
+	LKU_DPT_11BYTE,
+	LKU_DPT_12BYTE,
+	LKU_DPT_13BYTE,
+	LKU_DPT_14BYTE,
+	LKU_DPT_MAX,
 } LKU_DPT_TYPE;
+
+typedef union {
+	uint8_t		byte[2];
+	uint16_t	glb;
+} LKU_ADDR_TYPE;
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//
@@ -57,7 +68,9 @@ typedef enum {
 //-START----------------------- Functions Declaration ------------------------//
 GLOBAL int LKU_Init(hid_device** pDevice);
 GLOBAL int LKU_Deinit(hid_device* pDevice);
-GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
+GLOBAL int LKU_SendRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
+GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
+		LKU_DPT_TYPE dpt, uint8_t* payload, uint8_t len);
 //-END------------------------- Functions Declaration ------------------------//
 
 

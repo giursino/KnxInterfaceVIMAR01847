@@ -49,6 +49,7 @@
 
 
 //-START----------------------- Functions Declaration ------------------------//
+LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 //-END------------------------- Functions Declaration ------------------------//
 
 
@@ -68,6 +69,16 @@
 
 //-START--------------------------- Functions --------------------------------//
 
+/// Stampa messaggio in hex
+LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
+	uint8_t i=0;
+	printf("%s: ", strprefix);
+	for (i=0; i<u8Len; i++){
+		printf("%.2X ", pMsg[i]);
+	}
+	printf(".\n");
+}
+
 /// Funzione principale
 ///
 int main(int argc, char* argv[]) {
@@ -83,6 +94,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 	printf("File descriptor: %p.\n", pDevice);
+
 
 	// Send msg to device
 	printf("\n");
@@ -101,33 +113,29 @@ int main(int argc, char* argv[]) {
 	buf[i++] = 0x00;
 	buf[i++] = 0x81;
 	len=i;
-	res = LKU_SendGroupValueWrite(pDevice, buf, len);
+	res = LKU_SendRawMessage(pDevice, buf, len);
 	if (res < 0) {
-		perror("LKU_SendGroupValueWrite");
+		perror("LKU_SendRawMessage");
 		exit(1);
 	}
-	printf("Sent msg: ");
-	for (i=0; i<len; i++){
-		printf("%.2X ", buf[i]);
-	}
-	printf(".\n");
+	DebugPrintMsg("LKU_SendRawMessage", buf, len);
+
 
 	// Send msg to device
 	printf("\n");
 	printf("Send A_GroupValueWrite to 0x0C0A with value OFF.\n");
 	printf("Press enter to continue...");
 	getc(stdin);
-	buf[len-1] = 0x80;
-	res = LKU_SendGroupValueWrite(pDevice, buf, len);
+	LKU_ADDR_TYPE ga;
+	ga.byte[0] = 0x0C;
+	ga.byte[1] = 0x0A;
+	int data = 0;
+	res = LKU_SendGroupValueWrite(pDevice, ga, LKU_DPT_6BIT, &data, 1);
 	if (res < 0) {
 		perror("LKU_SendGroupValueWrite");
 		exit(1);
 	}
-	printf("Sent msg: ");
-	for (i=0; i<len; i++){
-		printf("%.2X ", buf[i]);
-	}
-	printf(".\n");
+	DebugPrintMsg("LKU_SendGroupValueWrite", &data, 1);
 
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
