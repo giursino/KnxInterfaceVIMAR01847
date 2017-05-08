@@ -23,7 +23,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 	01847-test.h
 
 # Libraries
-01847_test_LDADD = $(top_builddir)/libknxusb/libknxusb.la
+01847_test_LDADD = @CURSES_LIB@ $(top_builddir)/libknxusb/libknxusb.la
 
 # Linker options
 01847_test_LDFLAGS = -rpath `cd $(top_builddir);pwd`/libknxusb/.libs
