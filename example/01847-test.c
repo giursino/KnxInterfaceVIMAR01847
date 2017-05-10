@@ -50,7 +50,7 @@
 
 
 //-START----------------------- Functions Declaration ------------------------//
-LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
+LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 //-END------------------------- Functions Declaration ------------------------//
 
 
@@ -60,6 +60,10 @@ LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8L
 
 //-START----------------------------- Variables ------------------------------//
 //-PUBLIC-
+GLOBAL WINDOW* wlog;
+GLOBAL WINDOW* wtx;
+GLOBAL WINDOW* wrx;
+GLOBAL WINDOW* borderwin;
 //-PRIVATE-
 //-END------------------------------ Variables -------------------------------//
 
@@ -70,14 +74,15 @@ LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8L
 
 //-START--------------------------- Functions --------------------------------//
 
-/// Stampa messaggio in hex
-LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
+/// Print hex message on log
+LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
-	printf("%s: ", strprefix);
+	wprintw(wlog, "%s: ", strprefix);
 	for (i=0; i<u8Len; i++){
-		printf("%.2X ", pMsg[i]);
+		wprintw(wlog, "%.2X ", pMsg[i]);
 	}
-	printf(".\n");
+	wprintw(wlog, ".\n");
+	wrefresh(wlog);
 }
 
 // Send msg to device
@@ -107,7 +112,7 @@ LOCAL void SendMsg1(hid_device* pDevice) {
 		perror("LKU_SendRawMessage");
 		exit(1);
 	}
-	DebugPrintMsg("LKU_SendRawMessage", buf, len);
+	LogPrintMsg("LKU_SendRawMessage", buf, len);
 }
 
 // Send msg to device
@@ -130,9 +135,54 @@ LOCAL void SendMsg2 (hid_device* pDevice) {
 		perror("LKU_SendGroupValueWrite");
 		exit(1);
 	}
-	DebugPrintMsg("LKU_SendGroupValueWrite", &data, 1);
+	LogPrintMsg("LKU_SendGroupValueWrite", &data, 1);
 }
 
+// Remove space from string
+LOCAL void RemoveSpace (char* str) {
+	char *write = str, *read = str;
+	do {
+	   if (*read != ' ')
+	       *write++ = *read;
+	} while (*read++);
+}
+
+// Send message
+LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
+	int len, i, res;
+	uint8_t msg[LKU_KNX_MSG_LENGTH];
+
+	RemoveSpace(strmsg);
+
+	len = strlen(strmsg);
+	if (len % 2) {
+		return -1;
+	}
+	if (len > (LKU_KNX_MSG_LENGTH*2)) {
+		return -1;
+	}
+
+	for (i=0; i<len; i+=2) {
+		char strbyte[3];
+		char *err;
+		strbyte[0]=strmsg[i];
+		strbyte[1]=strmsg[i+1];
+		strbyte[2]='\0';
+		msg[i/2] = (uint8_t) strtoul(strbyte, &err, 16);
+		if (*err != '\0') {
+			return -1;
+		}
+	}
+	len/=2;
+
+	res = LKU_SendRawMessage(pDevice, msg, len);
+	if (res < 0) {
+		return -1;
+	}
+	LogPrintMsg("SendStringMsg", msg, len);
+
+	return len;
+}
 
 /// Funzione principale
 ///
@@ -143,10 +193,6 @@ int main(int argc, char* argv[]) {
 	hid_device* pDevice;
 	int res;
 	int ch;
-	WINDOW* wlog;
-	WINDOW* wtx;
-	WINDOW* wrx;
-	WINDOW* borderwin;
 	int startx, starty, width, height, cline;
 	bool toexit = FALSE;
 
@@ -165,7 +211,6 @@ int main(int argc, char* argv[]) {
 	// Use newline on print
 	nl();
 
-	printw("Press F2 to exit");
 	refresh();
 
 	cline=0;
@@ -223,10 +268,10 @@ int main(int argc, char* argv[]) {
 		perror("LKU_Init");
 		exit(1);
 	}
-	wprintw(wlog, "File descriptor: %p.\n", pDevice);
+	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
 
 	// todo
-	wmove(wlog, 1, 1);
+	//wmove(wlog, 1, 1);
 	//wsetscrreg(wlog, 1, height-2);
 	wrefresh(wlog);
 
@@ -237,21 +282,25 @@ int main(int argc, char* argv[]) {
 		}
 		else if (ch == 's') {
 			// send msg
-			char msg[22];
+			char smsg[LKU_KNX_MSG_LENGTH*2];
 			wmove(wtx, 0, 0);
+			wattron(wtx, A_BOLD);
 			wprintw(wtx, "Write msg: ");
+			wattroff(wtx, A_BOLD);
 			echo();
-			wgetstr(wtx, msg);
+			wgetnstr(wtx, smsg, LKU_KNX_MSG_LENGTH*2);
 			noecho();
 			wclear(wtx);
-			wprintw(wlog, "Sent: %s\n", msg);
+			if (SendStringMsg(pDevice, smsg) < 0) {
+				LogPrint("SendStringMsg", "ERROR: message not sent");
+			}
 		}
 		else {
 			//wmove(wlog,1,1);
 			wprintw(wlog, "The pressed key is ");
-			attron(A_BOLD);
+			wattron(wlog, A_BOLD);
 			wprintw(wlog, "%c\n", ch);
-			attroff(A_BOLD);
+			wattroff(wlog, A_BOLD);
 		}
 
 		// refresh

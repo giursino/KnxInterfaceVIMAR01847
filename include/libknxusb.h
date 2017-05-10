@@ -31,6 +31,7 @@
 
 
 //-START------------------------------ Types ---------------------------------//
+///KNX DPT size
 typedef enum {
 	LKU_DPT_6BIT,
 	LKU_DPT_1BYTE,
@@ -50,10 +51,14 @@ typedef enum {
 	LKU_DPT_MAX,
 } LKU_DPT_TYPE;
 
+/// KNX address
 typedef union {
 	uint8_t		byte[2];
 	uint16_t	glb;
 } LKU_ADDR_TYPE;
+
+/// Max length of KNX message
+#define LKU_KNX_MSG_LENGTH		22
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//

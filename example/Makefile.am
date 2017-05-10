@@ -20,7 +20,9 @@ ACLOCAL_AMFLAGS=-I ../m4
 # Sources
 01847_test_SOURCES= \
 	01847-test.c \
-	01847-test.h
+	01847-test.h \
+	common.c \
+	common.h
 
 # Libraries
 01847_test_LDADD = @CURSES_LIB@ $(top_builddir)/libknxusb/libknxusb.la

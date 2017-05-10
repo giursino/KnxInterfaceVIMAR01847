@@ -30,9 +30,6 @@
 /// Max length of cEmi message
 #define LKU_CEMI_MSG_LENGTH		64
 
-/// Max length of KNX message
-#define LKU_KNX_MSG_LENGTH		22
-
 /// KNX msg field
 /// @{
 #define LKU_KNX_MSG_CTRLFIELD	0
