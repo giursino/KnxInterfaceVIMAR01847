@@ -63,7 +63,6 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 GLOBAL WINDOW* wlog;
 GLOBAL WINDOW* wtx;
 GLOBAL WINDOW* wrx;
-GLOBAL WINDOW* borderwin;
 //-PRIVATE-
 //-END------------------------------ Variables -------------------------------//
 
@@ -154,7 +153,13 @@ LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
 
 	RemoveSpace(strmsg);
 
+	if (strmsg == NULL) {
+		return -1;
+	}
 	len = strlen(strmsg);
+	if (len <= 0) {
+		return -1;
+	}
 	if (len % 2) {
 		return -1;
 	}
@@ -184,6 +189,31 @@ LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
 	return len;
 }
 
+// Create and draw window with border on screen
+LOCAL WINDOW* CreateWinWithBorder(char* name, bool scroll,
+		int startx, int starty,	int width, int height) {
+
+	WINDOW* borderwin;
+	WINDOW* containerwin;
+	borderwin = newwin(height, width, starty, startx);
+	box(borderwin, 0 , 0);
+	wmove(borderwin, 0, 2);
+	wprintw(borderwin, name);
+	wrefresh(borderwin);
+	containerwin = newwin(height-2, width-2, starty+1, startx+1);
+	scrollok(containerwin, scroll);
+	wrefresh(containerwin);
+
+	return containerwin;
+}
+
+LOCAL void RefreshAll() {
+	wnoutrefresh(wlog);
+	wnoutrefresh(wtx);
+	wnoutrefresh(wrx);
+	doupdate();
+}
+
 /// Funzione principale
 ///
 int main(int argc, char* argv[]) {
@@ -193,7 +223,6 @@ int main(int argc, char* argv[]) {
 	hid_device* pDevice;
 	int res;
 	int ch;
-	int startx, starty, width, height, cline;
 	bool toexit = FALSE;
 
 	// Init curses
@@ -210,57 +239,18 @@ int main(int argc, char* argv[]) {
 	noecho();
 	// Use newline on print
 	nl();
-
+	// Refresh to init the screen
 	refresh();
-
-	cline=0;
 
 	// log window
-	height = LINES/6;
-	width = COLS;
-	starty = 0;
-	startx = 0;
-	borderwin = newwin(height, width, starty, startx);
-	box(borderwin, 0 , 0);
-	wmove(borderwin, 0, 2);
-	wprintw(borderwin, "Log");
-	wrefresh(borderwin);
-	wlog = newwin(height-2, width-2, starty+1, startx+1);
-	scrollok(wlog, TRUE);
-	cline+=height;
-
+	wlog = CreateWinWithBorder("Log", TRUE, 0, 0, COLS, LINES/6);
 	// send window
-	height = 3;
-	width = COLS;
-	starty = LINES/6;
-	startx = 0;
-	borderwin = newwin(height, width, starty, startx);
-	box(borderwin, 0 , 0);
-	wmove(borderwin, 0, 2);
-	wprintw(borderwin, "Send");
-	wrefresh(borderwin);
-	wtx = newwin(height-2, width-2, starty+1, startx+1);
-	cline+=height;
-
+	wtx = CreateWinWithBorder("Send", FALSE, 0, LINES/6, COLS, 3);
 	// receive window
-	height = LINES-cline;
-	width = COLS;
-	starty = cline;
-	startx = 0;
-	borderwin = newwin(height, width, starty, startx);
-	box(borderwin, 0 , 0);
-	wmove(borderwin, 0, 2);
-	wprintw(borderwin, "Receive");
-	wrefresh(borderwin);
-	wrx = newwin(height-2, width-2, starty+1, startx+1);
-	scrollok(wrx, TRUE);
-	cline+=height;
+	wrx = CreateWinWithBorder("Receive", TRUE, 0, LINES/6 + 3, COLS, LINES - LINES/6 - 3);
 
 	// refresh
-	refresh();
-	wrefresh(wlog);
-	wrefresh(wtx);
-	wrefresh(wrx);
+	RefreshAll();
 
 	// Init Lib Knx Usb
 	res = LKU_Init(&pDevice);
@@ -303,11 +293,7 @@ int main(int argc, char* argv[]) {
 			wattroff(wlog, A_BOLD);
 		}
 
-		// refresh
-		refresh();
-		wrefresh(wlog);
-		wrefresh(wtx);
-		wrefresh(wrx);
+		RefreshAll();
 	}
 
 #if 1
@@ -327,7 +313,8 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	endwin();			/* End curses mode		  */
+	// End curses mode
+	endwin();
 
 	printf("Done.\n");
 
