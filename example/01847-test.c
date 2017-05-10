@@ -207,6 +207,7 @@ LOCAL WINDOW* CreateWinWithBorder(char* name, bool scroll,
 	return containerwin;
 }
 
+/// Refresh the screen optimized
 LOCAL void RefreshAll() {
 	wnoutrefresh(wlog);
 	wnoutrefresh(wtx);
@@ -214,7 +215,7 @@ LOCAL void RefreshAll() {
 	doupdate();
 }
 
-/// Funzione principale
+/// Main function
 ///
 int main(int argc, char* argv[]) {
 
@@ -260,11 +261,6 @@ int main(int argc, char* argv[]) {
 	}
 	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
 
-	// todo
-	//wmove(wlog, 1, 1);
-	//wsetscrreg(wlog, 1, height-2);
-	wrefresh(wlog);
-
 	while(!toexit) {
 		ch = getch();
 		if ((ch == KEY_F(2)) || (ch == 'q')) {
@@ -286,7 +282,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else {
-			//wmove(wlog,1,1);
 			wprintw(wlog, "The pressed key is ");
 			wattron(wlog, A_BOLD);
 			wprintw(wlog, "%c\n", ch);
@@ -295,17 +290,6 @@ int main(int argc, char* argv[]) {
 
 		RefreshAll();
 	}
-
-#if 1
-	// End curses mode
-	endwin();
-	exit(1);
-#endif
-
-
-	SendMsg1(pDevice);
-
-	SendMsg2(pDevice);
 
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
