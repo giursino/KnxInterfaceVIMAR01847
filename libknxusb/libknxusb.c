@@ -52,6 +52,8 @@
 //-START----------------------- Functions Declaration ------------------------//
 LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen);
+LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
+		uint8_t* pMsgLData, uint8_t u8MsgLDataLen);
 LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 //-END------------------------- Functions Declaration ------------------------//
 
@@ -124,7 +126,7 @@ GLOBAL int LKU_Deinit(hid_device* pDevice) {
 /// @return	0 on success and -1 on error
 ///
 GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
-		LKU_DPT_TYPE dpt, uint8_t* payload, uint8_t len) {
+		LKU_DPT_TYPE dpt, const uint8_t* payload, uint8_t len) {
 	int res;
 	uint8_t msg[LKU_KNX_MSG_LENGTH];
 	uint8_t msglen;
@@ -159,7 +161,7 @@ GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
 		msglen=LKU_KNX_MSG_APCIFIELD2+len;
 	}
 
-	res = LKU_SendRawMessage(pDevice, &msg, msglen);
+	res = LKU_SendRawMessage(pDevice, msg, msglen);
 
 	return res;
 }
@@ -169,7 +171,7 @@ GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
 /// @param  pMsg	point to msg buffer
 /// @return	0 on success and -1 on error
 ///
-GLOBAL int LKU_SendRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen) {
+GLOBAL int LKU_SendRawMessage(hid_device* pDevice, const uint8_t* pMsg, uint8_t u8MsgLen) {
 	uint8_t pMsgCEmi[LKU_CEMI_MSG_LENGTH];
 	int res, len;
 
@@ -190,7 +192,35 @@ GLOBAL int LKU_SendRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgL
 }
 
 
+/// Receive a raw message from knx bus. Function blocking.
+/// @param 	pDevice	pointer to device handler
+/// @param  pMsg	pointer to received msg buffer
+/// @param  u8MsgLen received msg buffer len
+/// @return	number of byte received and -1 on error
+///
+GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen) {
+	uint8_t msg[LKU_CEMI_MSG_LENGTH];
+	int res;
+
+	res = hid_read(pDevice, msg, LKU_CEMI_MSG_LENGTH);
+	if (res < 0) {
+		perror("Error on reading raw message");
+		return -1;
+	}
+	if (LKU_LData2CEmi(msg, res, pMsg, u8MsgLen) < 0) {
+		perror("Error decoding CEMI message");
+		return -1;
+	}
+	return u8MsgLen;
+}
+
 /// Convert L_DATA msg to cEmi msg
+/// @param 	pMsgLData	 input LData msg
+/// @param 	pMsgLDataLen LData msg len
+/// @param 	pMsgCEmi	 output CEmi msg
+/// @param 	pMsgCEmiLen  CEmi msg len
+/// @return	cEmi msg len on success and -1 on error
+///
 LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen) {
 
@@ -228,6 +258,57 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[6];
 	pMsgCEmi[i++] = pMsgLData[7];
 	return i;
+}
+
+/// Convert cEmi to L_DATA msg
+/// @param 	pMsgCEmi	 input CEmi msg
+/// @param 	pMsgCEmiLen  CEmi msg len
+/// @param 	pMsgLData	 output LData msg
+/// @param 	pMsgLDataLen LData msg len
+/// @return	LData msg len on success and -1 on error
+///
+LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
+		uint8_t* pMsgLData, uint8_t u8MsgLDataLen) {
+
+	if (u8MsgCEmiLen < u8MsgLDataLen + 19) {
+		perror("Message destination size lower than source");
+		return -1;
+	}
+	int i=0;
+	int mlen;
+	int sdata;
+	// KNX HID Report Header
+	checkCEmiByte(pMsgCEmi[i++], 0x01); //ReportId
+	checkCEmiByte(pMsgCEmi[i++], 0x13); //PacketInfo
+	i++; //Datalength
+	// KNX HID Report Body
+	// KNX USB Transfer Protocol Header (only in start packet!)
+	checkCEmiByte(pMsgCEmi[i++], 0x00); //ProtocolVersion
+	checkCEmiByte(pMsgCEmi[i++], 0x08); //HeaderLength
+	mlen = pMsgCEmi[i++]<<8; //BodyLength
+	mlen |= pMsgCEmi[i++]; //    "
+	checkCEmiByte(pMsgCEmi[i++], 0x01); //ProtocolId
+	checkCEmiByte(pMsgCEmi[i++], 0x03); //EMIID (cEMI)
+	checkCEmiByte(pMsgCEmi[i++], 0x00); //ManufacturerCode
+	checkCEmiByte(pMsgCEmi[i++], 0x00); //    "
+	// KNX USB Transfer Protocol Body
+	checkCEmiByte(pMsgCEmi[i++], 0x29); //EMIMessageCode (29=rx, 11=tx)
+	// Data
+	checkCEmiByte(pMsgCEmi[i++], 0x00);
+	sdata = i;
+
+	// Creating LDATA msg
+	pMsgLData[0] = pMsgCEmi[sdata+0]; // Ctrl field
+	pMsgLData[1] = pMsgCEmi[sdata+2]; // Src address
+	pMsgLData[2] = pMsgCEmi[sdata+3]; //     "
+	pMsgLData[3] = pMsgCEmi[sdata+4]; // Dst address
+	pMsgLData[4] = pMsgCEmi[sdata+5]; //     "
+	pMsgLData[5] = pMsgCEmi[sdata+6]&0x0F | pMsgCEmi[sdata+1]&0xF0; // Len + Network
+	int j;
+	for ((i=sdata+7, j=0); i<mlen-7; (i++,j++)) {
+		pMsgLData[j] = pMsgCEmi[i];
+	}
+	return mlen;
 }
 
 LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {

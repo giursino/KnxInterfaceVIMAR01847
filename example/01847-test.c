@@ -288,6 +288,16 @@ int main(int argc, char* argv[]) {
 			wattroff(wlog, A_BOLD);
 		}
 
+// TODO: test receive function
+#if 0
+		{
+			uint8_t buf[65];
+			//res = hid_read_timeout(pDevice, buf, 65, 100);
+			res = LKU_ReceiveRawMessage(pDevice, buf, 65);
+			LogPrintMsg("READ", buf, res);
+		}
+#endif
+
 		RefreshAll();
 	}
 
