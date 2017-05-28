@@ -233,13 +233,13 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	// KNX HID Report Header
 	pMsgCEmi[i++] = 0x01; //ReportId
 	pMsgCEmi[i++] = 0x13; //PacketInfo
-	pMsgCEmi[i++] = 0x13; //Datalength
+	pMsgCEmi[i++] = 0x13; //Datalength  // TODO: fix with payload data +1
 	// KNX HID Report Body
 	// KNX USB Transfer Protocol Header (only in start packet!)
 	pMsgCEmi[i++] = 0x00; //ProtocolVersion
 	pMsgCEmi[i++] = 0x08; //HeaderLength
 	pMsgCEmi[i++] = 0x00; //BodyLength
-	pMsgCEmi[i++] = 0x0b; //    "
+	pMsgCEmi[i++] = 0x0b; //    "       // TODO: fix with payload data +1
 	pMsgCEmi[i++] = 0x01; //ProtocolId
 	pMsgCEmi[i++] = 0x03; //EMIID (cEMI)
 	pMsgCEmi[i++] = 0x00; //ManufacturerCode
@@ -257,6 +257,7 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[5]&0x0F;
 	pMsgCEmi[i++] = pMsgLData[6];
 	pMsgCEmi[i++] = pMsgLData[7];
+	// TODO: copy the rest of data byte!
 	return i;
 }
 
@@ -270,7 +271,7 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 		uint8_t* pMsgLData, uint8_t u8MsgLDataLen) {
 
-	if (u8MsgCEmiLen < u8MsgLDataLen + 19) {
+	if (u8MsgLDataLen  <  u8MsgCEmiLen - 19) {
 		perror("Message destination size lower than source");
 		return -1;
 	}
@@ -287,6 +288,7 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	checkCEmiByte(pMsgCEmi[i++], 0x08); //HeaderLength
 	mlen = pMsgCEmi[i++]<<8; //BodyLength
 	mlen |= pMsgCEmi[i++]; //    "
+	mlen -= 3; // calculate payload length
 	checkCEmiByte(pMsgCEmi[i++], 0x01); //ProtocolId
 	checkCEmiByte(pMsgCEmi[i++], 0x03); //EMIID (cEMI)
 	checkCEmiByte(pMsgCEmi[i++], 0x00); //ManufacturerCode
@@ -303,10 +305,9 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	pMsgLData[2] = pMsgCEmi[sdata+3]; //     "
 	pMsgLData[3] = pMsgCEmi[sdata+4]; // Dst address
 	pMsgLData[4] = pMsgCEmi[sdata+5]; //     "
-	pMsgLData[5] = pMsgCEmi[sdata+6]&0x0F | pMsgCEmi[sdata+1]&0xF0; // Len + Network
-	int j;
-	for ((i=sdata+7, j=0); i<mlen-7; (i++,j++)) {
-		pMsgLData[j] = pMsgCEmi[i];
+	pMsgLData[5] = (pMsgCEmi[sdata+6]&0x0F) | (pMsgCEmi[sdata+1]&0xF0); // Len + Network
+	for (i=0; i<mlen-6; i++) {
+		pMsgLData[6+i] = pMsgCEmi[sdata+7+i];
 	}
 	return mlen;
 }
