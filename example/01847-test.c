@@ -33,6 +33,7 @@
 #include <stdint.h>
 #include <hidapi/hidapi.h>
 #include <ncurses.h>
+#include <pthread.h>
 #include "config.h"
 #include "libknxusb.h"
 #include "01847-test.h"
@@ -82,6 +83,17 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 	}
 	wprintw(wlog, ".\n");
 	wrefresh(wlog);
+}
+
+/// Print hex message on recevie buffer
+LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
+	uint8_t i=0;
+	wprintw(wrx, "%s: ", strprefix);
+	for (i=0; i<u8Len; i++){
+		wprintw(wrx, "%.2X ", pMsg[i]);
+	}
+	wprintw(wrx, ".\n");
+	wrefresh(wrx);
 }
 
 // Send msg to device
@@ -215,6 +227,28 @@ LOCAL void RefreshAll() {
 	doupdate();
 }
 
+
+/// Thread function to handle the receiving of messages
+LOCAL void ThreadKnxRx(void *arg) {
+	int res;
+	uint8_t buf[65];
+	hid_device* pDevice = (hid_device*) arg;
+
+	while(1) {
+		res = LKU_ReceiveRawMessage(pDevice, buf, 65);
+		if (res < 0) {
+			perror("Error receiving data.");
+			exit(1);
+		}
+
+		time_t t = time(NULL);
+		struct tm *tm = localtime(&t);
+		char sTime[64];
+		strftime(sTime, sizeof(sTime), "%c", tm);
+		PrintReceivedMsg(sTime, buf, res);
+	}
+}
+
 /// Main function
 ///
 int main(int argc, char* argv[]) {
@@ -261,7 +295,15 @@ int main(int argc, char* argv[]) {
 	}
 	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
 
+	// Creating thread to handle the received message
+	pthread_t threadRx;
+	if (pthread_create(&threadRx, NULL, ThreadKnxRx, pDevice)) {
+		perror("Error creating thread");
+		exit(1);
+	}
+
 	while(!toexit) {
+
 		ch = getch();
 		if ((ch == KEY_F(2)) || (ch == 'q')) {
 			toexit = TRUE;
@@ -288,17 +330,17 @@ int main(int argc, char* argv[]) {
 			wattroff(wlog, A_BOLD);
 		}
 
-// TODO: test receive function
-#if 0
-		{
-			uint8_t buf[65];
-			//res = hid_read_timeout(pDevice, buf, 65, 100);
-			res = LKU_ReceiveRawMessage(pDevice, buf, 65);
-			LogPrintMsg("READ", buf, res);
-		}
-#endif
-
 		RefreshAll();
+	}
+
+	// End thread
+	if (pthread_cancel(&threadRx)) {
+		perror("Error ending thread");
+		exit(1);
+	}
+	if (pthread_join(&threadRx, NULL)) {
+		perror("Error waiting thread");
+		exit(1);
 	}
 
 	res = LKU_Deinit(pDevice);

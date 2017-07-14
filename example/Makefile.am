@@ -25,13 +25,20 @@ ACLOCAL_AMFLAGS=-I ../m4
 	common.h
 
 # Libraries
-01847_test_LDADD = @CURSES_LIB@ $(top_builddir)/libknxusb/libknxusb.la
+01847_test_LDADD = \
+	$(top_builddir)/libknxusb/libknxusb.la \
+	$(PTHREAD_LIBS) \
+	$(CURSES_LIBS)
 
 # Linker options
-01847_test_LDFLAGS = -rpath `cd $(top_builddir);pwd`/libknxusb/.libs
+01847_test_LDFLAGS = \
+	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs
 
 # Compiler options
-01847_test_CPPFLAGS = -I$(top_srcdir)/include
+01847_test_CPPFLAGS = \
+	-I$(top_srcdir)/include \
+	$(PTHREAD_CFLAGS) \
+	$(CURSES_CFLAGS)
 
 # Data files to be included in distro but not to be installed.
 EXTRA_DIST = 
@@ -41,4 +48,7 @@ EXTRA_DIST =
 01847_test_nolib_SOURCES= \
 	01847-test-nolib.c 
 	
-MAINTAINERCLEANFILES = Makefile.in 01847-test 01847-test-nolib 
+MAINTAINERCLEANFILES = \
+	Makefile.in \
+	01847-test \
+	01847-test-nolib 

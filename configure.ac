@@ -14,6 +14,8 @@ PKG_CHECK_MODULES([CMOCKA], [cmocka >= 0.0.1])
 AC_CHECK_LIB(hidapi-hidraw, hid_write, ,AC_MSG_ERROR([hidapi lib not found]))
 AC_CHECK_HEADER(hidapi/hidapi.h)
 
+ACX_PTHREAD
+
 AX_WITH_CURSES
 
 AC_PROG_CC

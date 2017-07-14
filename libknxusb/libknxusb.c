@@ -207,11 +207,12 @@ GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8M
 		perror("Error on reading raw message");
 		return -1;
 	}
-	if (LKU_LData2CEmi(msg, res, pMsg, u8MsgLen) < 0) {
+	res = LKU_CEmi2LData(msg, res, pMsg, u8MsgLen);
+	if (res < 0) {
 		perror("Error decoding CEMI message");
 		return -1;
 	}
-	return u8MsgLen;
+	return res;
 }
 
 /// Convert L_DATA msg to cEmi msg
