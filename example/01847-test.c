@@ -229,7 +229,7 @@ LOCAL void RefreshAll() {
 
 
 /// Thread function to handle the receiving of messages
-LOCAL void ThreadKnxRx(void *arg) {
+LOCAL void* ThreadKnxRx(void *arg) {
 	int res;
 	uint8_t buf[65];
 	hid_device* pDevice = (hid_device*) arg;
@@ -247,6 +247,7 @@ LOCAL void ThreadKnxRx(void *arg) {
 		strftime(sTime, sizeof(sTime), "%c", tm);
 		PrintReceivedMsg(sTime, buf, res);
 	}
+	return NULL;
 }
 
 /// Main function
@@ -334,11 +335,11 @@ int main(int argc, char* argv[]) {
 	}
 
 	// End thread
-	if (pthread_cancel(&threadRx)) {
+	if (pthread_cancel(threadRx)) {
 		perror("Error ending thread");
 		exit(1);
 	}
-	if (pthread_join(&threadRx, NULL)) {
+	if (pthread_join(threadRx, NULL)) {
 		perror("Error waiting thread");
 		exit(1);
 	}

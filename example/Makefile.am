@@ -28,7 +28,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 01847_test_LDADD = \
 	$(top_builddir)/libknxusb/libknxusb.la \
 	$(PTHREAD_LIBS) \
-	$(CURSES_LIBS)
+	$(CURSES_LIB)
 
 # Linker options
 01847_test_LDFLAGS = \
@@ -38,7 +38,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 01847_test_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(PTHREAD_CFLAGS) \
-	$(CURSES_CFLAGS)
+	$(CURSES_CPPFLAGS) 
 
 # Data files to be included in distro but not to be installed.
 EXTRA_DIST = 

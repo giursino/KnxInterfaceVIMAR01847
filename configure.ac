@@ -15,6 +15,7 @@ AC_CHECK_LIB(hidapi-hidraw, hid_write, ,AC_MSG_ERROR([hidapi lib not found]))
 AC_CHECK_HEADER(hidapi/hidapi.h)
 
 ACX_PTHREAD
+AC_CHECK_LIB(pthread, pthread_create, [PTHREAD_LIBS+=-lpthread])
 
 AX_WITH_CURSES
 
