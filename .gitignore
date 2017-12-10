@@ -25,6 +25,7 @@ ltmain.sh
 .deps
 01847-test
 01847-test-nolib
+01847-temp
 .libs
 *.la
 *.lo
