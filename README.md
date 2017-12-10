@@ -21,7 +21,7 @@ plug 01847 device and check if /dev/vimar-01847 exists when 01847 is plugged
 
 ## Build
 
-sudo apt-get install build-essential pkgconf autoconf automake libtool 
+sudo apt-get install build-essential pkgconf autoconf automake libtool autoconf-archive
 
 
 ## Usage
