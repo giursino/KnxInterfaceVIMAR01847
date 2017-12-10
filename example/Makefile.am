@@ -65,7 +65,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 01847_temp_LDADD = \
 	$(top_builddir)/libknxusb/libknxusb.la \
-	$(PTHREAD_LIBS) \
+	$(PTHREAD_LIBS) 
 
 # Linker options
 01847_temp_LDFLAGS = \
