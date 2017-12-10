@@ -27,16 +27,6 @@
 #endif
 #define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
 
-/// Print message on log
-#define LogPrint(strprefix, ...)		{       \
-	if ((strprefix) && (strlen(strprefix))) {   \
-		wprintw(wlog, "%s: ", strprefix);       \
-	}                                           \
-	wprintw(wlog, __VA_ARGS__);                 \
-	wprintw(wlog, "\n");                        \
-	wrefresh(wlog);                             \
-}
-
 //-END----------------------------- Definitions ------------------------------//
 
 

@@ -1,5 +1,5 @@
 //******************************************************************************
-/// @file 01847-test.c
+/// @file 01847-temp.c
 /// @brief Applicativo di test per l'articolo 01847
 /// $Author$
 /// $Date$
@@ -23,20 +23,21 @@
 */
 
 //-START--------------------------- Definitions ------------------------------//
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <errno.h>
 #include <time.h>
 #include <stdint.h>
 #include <hidapi/hidapi.h>
-#include <ncurses.h>
 #include <pthread.h>
 #include "config.h"
 #include "libknxusb.h"
-#include "01847-test.h"
+#include "01847-temp.h"
 
 #ifdef LOCAL
 	#undef LOCAL
@@ -61,9 +62,6 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 
 //-START----------------------------- Variables ------------------------------//
 //-PUBLIC-
-GLOBAL WINDOW* wlog;
-GLOBAL WINDOW* wtx;
-GLOBAL WINDOW* wrx;
 //-PRIVATE-
 //-END------------------------------ Variables -------------------------------//
 
@@ -77,77 +75,36 @@ GLOBAL WINDOW* wrx;
 /// Print hex message on log
 LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
-	wprintw(wlog, "%s: ", strprefix);
+	fprintf(stdout, "%s: ", strprefix);
 	for (i=0; i<u8Len; i++){
-		wprintw(wlog, "%.2X ", pMsg[i]);
+		fprintf(stdout, "%.2X ", pMsg[i]);
 	}
-	wprintw(wlog, ".\n");
-	wrefresh(wlog);
+	fprintf(stdout, ".\n");
 }
 
 /// Print hex message on recevie buffer
 LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
-	wprintw(wrx, "%s: ", strprefix);
+	fprintf(stdout, "%s: ", strprefix);
 	for (i=0; i<u8Len; i++){
-		wprintw(wrx, "%.2X ", pMsg[i]);
+		switch (i) {
+			case 1:
+			case 3:
+			case 5:
+			case 6:
+			case 7:
+			case 8:
+				fprintf(stdout, " ");
+				break;
+
+			default:
+				break;
+		}
+		fprintf(stdout, "%.2X", pMsg[i]);
 	}
-	wprintw(wrx, ".\n");
-	wrefresh(wrx);
+	fprintf(stdout, ".\n");
 }
 
-// Send msg to device
-LOCAL void SendMsg1(hid_device* pDevice) {
-	int res;
-	uint8_t buf[8];
-	uint8_t i=0;
-	uint8_t len;
-
-	printf("\n");
-	printf("Send A_GroupValueWrite to 0x0C0A with value ON.\n");
-	printf("Press enter to continue...");
-	getc(stdin);
-
-	buf[i++] = 0xbc;
-	buf[i++] = 0x10;
-	buf[i++] = 0x01;
-	buf[i++] = 0x0c;
-	buf[i++] = 0x0a;
-	buf[i++] = 0xE1;
-	buf[i++] = 0x00;
-	buf[i++] = 0x81;
-	len=i;
-
-	res = LKU_SendRawMessage(pDevice, buf, len);
-	if (res < 0) {
-		perror("LKU_SendRawMessage");
-		exit(1);
-	}
-	LogPrintMsg("LKU_SendRawMessage", buf, len);
-}
-
-// Send msg to device
-LOCAL void SendMsg2 (hid_device* pDevice) {
-	int res;
-	LKU_ADDR_TYPE ga;
-	uint8_t data;
-
-	printf("\n");
-	printf("Send A_GroupValueWrite to 0x0C0A with value OFF.\n");
-	printf("Press enter to continue...");
-	getc(stdin);
-
-	ga.byte[0] = 0x0C;
-	ga.byte[1] = 0x0A;
-	data = 0;
-
-	res = LKU_SendGroupValueWrite(pDevice, ga, LKU_DPT_6BIT, &data, 1);
-	if (res < 0) {
-		perror("LKU_SendGroupValueWrite");
-		exit(1);
-	}
-	LogPrintMsg("LKU_SendGroupValueWrite", &data, 1);
-}
 
 // Remove space from string
 LOCAL void RemoveSpace (char* str) {
@@ -201,32 +158,23 @@ LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
 	return len;
 }
 
-// Create and draw window with border on screen
-LOCAL WINDOW* CreateWinWithBorder(char* name, bool scroll,
-		int startx, int starty,	int width, int height) {
+LOCAL float DptValueTemp2Float (uint8_t dpt[2]) {
+	int16_t t_raw = (dpt[0] << 8) + dpt[1];
+	int16_t m = t_raw & 0x87FF;
+	uint8_t e = (t_raw & 0x7800) >> 11;
+	float t = (0.01*m) * powf(2,e);
 
-	WINDOW* borderwin;
-	WINDOW* containerwin;
-	borderwin = newwin(height, width, starty, startx);
-	box(borderwin, 0 , 0);
-	wmove(borderwin, 0, 2);
-	wprintw(borderwin, name);
-	wrefresh(borderwin);
-	containerwin = newwin(height-2, width-2, starty+1, startx+1);
-	scrollok(containerwin, scroll);
-	wrefresh(containerwin);
+#if 0
+	fprintf(stdout, "* t_raw=0x%.4X\n", t_raw);
+	fprintf(stdout, "* m=%i (0x%.4X)\n", m, m);
+	fprintf(stdout, "* e=%i (0x%.4X)\n", e, e);
+	fprintf(stdout, "* t=%f\n", t);
+	fprintf(stdout, "* 2^e=%f\n", powf(2,e));
+	fprintf(stdout, "* 0.01*m=%f\n", 0.01*m);
+#endif
 
-	return containerwin;
+	return t;
 }
-
-/// Refresh the screen optimized
-LOCAL void RefreshAll() {
-	wnoutrefresh(wlog);
-	wnoutrefresh(wtx);
-	wnoutrefresh(wrx);
-	doupdate();
-}
-
 
 /// Thread function to handle the receiving of messages
 LOCAL void* ThreadKnxRx(void *arg) {
@@ -246,6 +194,18 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		char sTime[64];
 		strftime(sTime, sizeof(sTime), "%c", tm);
 		PrintReceivedMsg(sTime, buf, res);
+
+
+		if ((buf[3]==0x0C) && (buf[4]==0x72)) {
+			float t = DptValueTemp2Float(&buf[8]);
+			fprintf(stdout, "*** Zona giorno, Ta=%.1f\n", t);
+		}
+
+		if ((buf[3]==0x0C) && (buf[4]==0x99)) {
+			float t = DptValueTemp2Float(&buf[8]);
+			fprintf(stdout, "*** Zona notte, Ta=%.1f\n", t);
+		}
+
 	}
 	return NULL;
 }
@@ -259,34 +219,8 @@ int main(int argc, char* argv[]) {
 	hid_device* pDevice;
 	int res;
 	int ch;
-	bool toexit = FALSE;
+	bool toexit = false;
 
-	// Init curses
-	if (initscr() == NULL) {
-		perror("Could not initialize screen");
-		exit(1);
-	}
-	// Line buffering disabled on input
-	// (when use getch you don't press enter to accept the keypressed)
-	raw();
-	// We get F1, F2 etc..
-	keypad(stdscr, TRUE);
-	// Don't echo() while we do getch
-	noecho();
-	// Use newline on print
-	nl();
-	// Refresh to init the screen
-	refresh();
-
-	// log window
-	wlog = CreateWinWithBorder("Log", TRUE, 0, 0, COLS, LINES/6);
-	// send window
-	wtx = CreateWinWithBorder("Send", FALSE, 0, LINES/6, COLS, 3);
-	// receive window
-	wrx = CreateWinWithBorder("Receive", TRUE, 0, LINES/6 + 3, COLS, LINES - LINES/6 - 3);
-
-	// refresh
-	RefreshAll();
 
 	// Init Lib Knx Usb
 	res = LKU_Init(&pDevice);
@@ -294,7 +228,6 @@ int main(int argc, char* argv[]) {
 		perror("LKU_Init");
 		exit(1);
 	}
-	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
 
 	// Creating thread to handle the received message
 	pthread_t threadRx;
@@ -303,35 +236,20 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+	printf("Press 'q' to quit...\n");
 	while(!toexit) {
 
-		ch = getch();
-		if ((ch == KEY_F(2)) || (ch == 'q')) {
-			toexit = TRUE;
-		}
-		else if (ch == 's') {
-			// send msg
-			char smsg[LKU_KNX_MSG_LENGTH*2];
-			wmove(wtx, 0, 0);
-			wattron(wtx, A_BOLD);
-			wprintw(wtx, "Write msg: ");
-			wattroff(wtx, A_BOLD);
-			echo();
-			wgetnstr(wtx, smsg, LKU_KNX_MSG_LENGTH*2);
-			noecho();
-			wclear(wtx);
-			if (SendStringMsg(pDevice, smsg) < 0) {
-				LogPrint("SendStringMsg", "ERROR: message not sent");
-			}
-		}
-		else {
-			wprintw(wlog, "The pressed key is ");
-			wattron(wlog, A_BOLD);
-			wprintw(wlog, "%c\n", ch);
-			wattroff(wlog, A_BOLD);
+		ch = getchar();
+		if (ch == 'q') {
+			toexit = true;
 		}
 
-		RefreshAll();
+#if 0
+		uint8_t tfix[2] = {0x0C, 0x1A};
+		float t = DptValueTemp2Float(tfix);
+		printf("t=%.1f \n\n", t);
+#endif
+
 	}
 
 	// End thread
@@ -349,9 +267,6 @@ int main(int argc, char* argv[]) {
 		perror("LKU_Deinit");
 		exit(1);
 	}
-
-	// End curses mode
-	endwin();
 
 	printf("Done.\n");
 
