@@ -204,12 +204,12 @@ GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8M
 
 	res = hid_read(pDevice, msg, LKU_CEMI_MSG_LENGTH);
 	if (res < 0) {
-		perror("Error on reading raw message");
+		fprintf(stderr, "Error on reading raw message\n");
 		return -1;
 	}
 	res = LKU_CEmi2LData(msg, res, pMsg, u8MsgLen);
 	if (res < 0) {
-		perror("Error decoding CEMI message");
+		fprintf(stderr, "Error decoding CEMI message\n");
 		return -1;
 	}
 	return res;
@@ -226,7 +226,7 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen) {
 
 	if (u8MsgCEmiLen < u8MsgLDataLen + 19) {
-		perror("Message destination size lower than source");
+		fprintf(stderr, "Message destination size lower than source\n");
 		return -1;
 	}
 
@@ -273,7 +273,7 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 		uint8_t* pMsgLData, uint8_t u8MsgLDataLen) {
 
 	if (u8MsgLDataLen  <  u8MsgCEmiLen - 19) {
-		perror("Message destination size lower than source");
+		fprintf(stderr, "Message destination size lower than source\n");
 		return -1;
 	}
 	int i=0;
@@ -295,7 +295,8 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	checkCEmiByte(pMsgCEmi[i++], 0x00); //ManufacturerCode
 	checkCEmiByte(pMsgCEmi[i++], 0x00); //    "
 	// KNX USB Transfer Protocol Body
-	checkCEmiByte(pMsgCEmi[i++], 0x29); //EMIMessageCode (29=rx, 11=tx)
+	//checkCEmiByte(pMsgCEmi[i++], 0x29); //EMIMessageCode (29=rx, 11=tx)
+	i++;
 	// Data
 	checkCEmiByte(pMsgCEmi[i++], 0x00);
 	sdata = i;

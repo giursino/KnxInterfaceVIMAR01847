@@ -77,7 +77,7 @@
 //-START------------------------------ Macro ---------------------------------//
 #define checkCEmiByte(in, exptected) \
 	if ((uint8_t) (in) !=  (uint8_t) (exptected)) { \
-		perror("CEMI message not recognized"); \
+		fprintf(stderr, "CEMI message not recognized (%02X != %02X)\n", in, exptected); \
 		return -1; \
 	}; \
 //-END-------------------------------- Macro ---------------------------------//

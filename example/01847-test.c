@@ -85,7 +85,7 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 	wrefresh(wlog);
 }
 
-/// Print hex message on recevie buffer
+/// Print hex message on receive buffer
 LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
 	wprintw(wrx, "%s: ", strprefix);
