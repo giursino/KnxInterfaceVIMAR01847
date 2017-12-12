@@ -240,10 +240,17 @@ int main(int argc, char* argv[]) {
 
 	// Create socket to comunicate with other modules
 	int fd;
+#ifdef CONNECTION_ORIENTED
 	if ( (fd = socket(AF_UNIX, SOCK_STREAM , 0)) == -1) {
 		perror("Socket error");
 		exit(1);
 	}
+#else
+	if ( (fd = socket(AF_UNIX, SOCK_DGRAM, 0)) == -1) {
+		perror("Socket error");
+		exit(1);
+	}
+#endif
 
 	// Binding address to socket
 	struct sockaddr_un addr;
@@ -261,6 +268,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+#ifdef CONNECTION_ORIENTED
 	// Listening to new connections
 	if (listen(fd, 5) == -1) {
 		perror("listen error");
@@ -273,6 +281,9 @@ int main(int argc, char* argv[]) {
 		perror("accept error");
 		exit(1);
 	}
+#else
+	int cl = fd;
+#endif
 
 	// Creating thread to handle the received message
 	pthread_t threadRx;

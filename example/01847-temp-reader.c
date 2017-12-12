@@ -83,12 +83,20 @@ int main(int argc, char *argv[]) {
 
 	if (argc > 1)
 		socket_path = argv[1];
-
+#ifdef CONNECTION_ORIENTED
 	if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
 		perror("socket error");
 		exit(-1);
 	}
+#else
+	if ((fd = socket(AF_UNIX, SOCK_DGRAM, 0)) == -1) {
+		perror("socket error");
+		exit(-1);
+	}
+#endif
+	fprintf(stdout, "socket %i\n", fd);
 
+#ifdef CONNECTION_ORIENTED
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	if (*socket_path == '\0') {
@@ -102,20 +110,8 @@ int main(int argc, char *argv[]) {
 		perror("connect error");
 		exit(-1);
 	}
-
-#if 0
-	while (1) {
-		rc = read(fd, buf, sizeof(buf));
-		if (rc > 0) {
-			fprintf(stdout, "read %i bytes", rc);
-			fprintf(stdout, "DATA: %s", buf);
-		}
-		else {
-			perror("write error");
-			exit(-1);
-		}
-	}
 #endif
+
 
 	while (1) {
 		{
