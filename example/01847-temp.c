@@ -159,14 +159,17 @@ LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
 }
 
 LOCAL float DptValueTemp2Float (uint8_t dpt[2]) {
-	int16_t t_raw = (dpt[0] << 8) + dpt[1];
-	int16_t m = t_raw & 0x87FF;
-	uint8_t e = (t_raw & 0x7800) >> 11;
+	uint16_t t_raw = (dpt[0] << 8) + dpt[1];
+	int16_t m = t_raw & 0x7FF;
+	if ((t_raw & 0x8000) == 0x8000) {
+		m = -m;
+	}
+	uint8_t e = (uint8_t) ((t_raw & 0x7800) >> 11);
 	float t = (0.01*m) * powf(2,e);
 
-#if 0
+#if DEBUG
 	fprintf(stdout, "* t_raw=0x%.4X\n", t_raw);
-	fprintf(stdout, "* m=%i (0x%.4X)\n", m, m);
+	fprintf(stdout, "* m=%i (0x%.4X)\n", m, (uint16_t) m);
 	fprintf(stdout, "* e=%i (0x%.4X)\n", e, e);
 	fprintf(stdout, "* t=%f\n", t);
 	fprintf(stdout, "* 2^e=%f\n", powf(2,e));
@@ -244,10 +247,27 @@ int main(int argc, char* argv[]) {
 			toexit = true;
 		}
 
-#if 0
+#if DEBUG
+	{
 		uint8_t tfix[2] = {0x0C, 0x1A};
 		float t = DptValueTemp2Float(tfix);
 		printf("t=%.1f \n\n", t);
+	}
+	{
+		uint8_t tfix[2] = {0x8C, 0x1A};
+		float t = DptValueTemp2Float(tfix);
+		printf("t=%.1f \n\n", t);
+	}
+	{
+		uint8_t tfix[2] = {0x14, 0x1A};
+		float t = DptValueTemp2Float(tfix);
+		printf("t=%.1f \n\n", t);
+	}
+	{
+		uint8_t tfix[2] = {0x0C, 0x1B};
+		float t = DptValueTemp2Float(tfix);
+		printf("t=%.1f \n\n", t);
+	}
 #endif
 
 	}
