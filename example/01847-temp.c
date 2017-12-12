@@ -35,6 +35,9 @@
 #include <stdint.h>
 #include <hidapi/hidapi.h>
 #include <pthread.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <unistd.h>
 #include "config.h"
 #include "libknxusb.h"
 #include "01847-temp.h"
@@ -47,6 +50,7 @@
 	#undef GLOBAL
 #endif
 #define GLOBAL
+
 
 //-END----------------------------- Definitions ------------------------------//
 
@@ -63,6 +67,7 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 //-START----------------------------- Variables ------------------------------//
 //-PUBLIC-
 //-PRIVATE-
+LOCAL char *socket_path = SOCKET_FILE;
 //-END------------------------------ Variables -------------------------------//
 
 
@@ -232,6 +237,43 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+
+	// Create socket to comunicate with other modules
+	int fd;
+	if ( (fd = socket(AF_UNIX, SOCK_STREAM , 0)) == -1) {
+		perror("Socket error");
+		exit(1);
+	}
+
+	// Binding address to socket
+	struct sockaddr_un addr;
+	memset(&addr, 0, sizeof(addr));
+	addr.sun_family = AF_UNIX;
+	if (*socket_path == '\0') {
+		*addr.sun_path = '\0';
+		strncpy(addr.sun_path + 1, socket_path + 1, sizeof(addr.sun_path) - 2);
+	} else {
+		strncpy(addr.sun_path, socket_path, sizeof(addr.sun_path) - 1);
+		unlink(socket_path);
+	}
+	if (bind(fd, (struct sockaddr*) &addr, sizeof(addr)) == -1) {
+		perror("Bind error");
+		exit(1);
+	}
+
+	// Listening to new connections
+	if (listen(fd, 5) == -1) {
+		perror("listen error");
+		exit(1);
+	}
+
+	// Accepting new connections
+	int cl;
+	if ((cl = accept(fd, NULL, NULL)) == -1) {
+		perror("accept error");
+		exit(1);
+	}
+
 	// Creating thread to handle the received message
 	pthread_t threadRx;
 	if (pthread_create(&threadRx, NULL, ThreadKnxRx, pDevice)) {
@@ -268,7 +310,40 @@ int main(int argc, char* argv[]) {
 		float t = DptValueTemp2Float(tfix);
 		printf("t=%.1f \n\n", t);
 	}
+
+	{
+		char* buf = "pippo\n";
+		int rc = strlen(buf);
+		printf("send data [%s, %i bytes] to socket [%i] \n", buf, rc, cl);
+
+		if (write(cl, buf, rc) != rc) {
+			if (rc > 0)
+				fprintf(stderr, "partial write");
+			else {
+				perror("write error");
+				exit(-1);
+			}
+		}
+	}
 #endif
+
+	{
+		SocketData_Type buf;
+		int rc = sizeof(buf);
+		buf.time=12;
+		buf.temperature=12.5;
+		printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
+
+		if (write(cl, &buf, rc) != rc) {
+			if (rc > 0)
+				fprintf(stderr, "partial write");
+			else {
+				perror("write error");
+				exit(-1);
+			}
+		}
+	}
+
 
 	}
 
@@ -282,6 +357,13 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+	// Destroy socket
+	close(cl);
+	close(fd);
+	unlink(socket_path);
+	// TODO remove file
+
+	// Deinit Lib Knx Usb
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
 		perror("LKU_Deinit");

@@ -8,7 +8,7 @@ bin_PROGRAMS=01847-temp
 # Because a.out is only a sample program we don't want it to be installed.
 # The 'noinst_' prefix indicates that the following targets are not to be
 # installed.
-noinst_PROGRAMS=01847-test 01847-test-nolib
+noinst_PROGRAMS=01847-test 01847-test-nolib 01847-temp-reader
 
 #######################################
 # Build information for each executable. The variable name is derived
@@ -67,15 +67,17 @@ ACLOCAL_AMFLAGS=-I ../m4
 	$(top_builddir)/libknxusb/libknxusb.la \
 	$(PTHREAD_LIBS)
 
-# Linker options
 01847_temp_LDFLAGS = \
 	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs -lm
 
-# Compiler options
 01847_temp_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(PTHREAD_CFLAGS) 
 
+
+# Test del Programma di test della temperatura
+01847_temp_reader_SOURCES = \
+	01847-temp-reader.c 
 
 
 

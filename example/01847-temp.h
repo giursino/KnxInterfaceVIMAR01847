@@ -27,10 +27,16 @@
 #endif
 #define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
 
+#define SOCKET_FILE		"/tmp/01847-temp"
 //-END----------------------------- Definitions ------------------------------//
 
 
 //-START------------------------------ Types ---------------------------------//
+typedef struct {
+	int time;
+	float temperature;
+
+} SocketData_Type;
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//
