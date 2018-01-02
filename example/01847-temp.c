@@ -189,11 +189,12 @@ LOCAL float DptValueTemp2Float (uint8_t dpt[2]) {
 /// Thread function to handle the receiving of messages
 LOCAL void* ThreadKnxRx(void *arg) {
 	int res;
-	uint8_t buf[65];
-	hid_device* pDevice = (hid_device*) arg;
+	uint8_t rxbuf[65];
+	hid_device* pDevice = ((ThreadKnxArgs_Type*) arg)->pDevice;
+	int socket = ((ThreadKnxArgs_Type*) arg)->socket;
 
 	while(1) {
-		res = LKU_ReceiveRawMessage(pDevice, buf, 65);
+		res = LKU_ReceiveRawMessage(pDevice, rxbuf, 65);
 		if (res < 0) {
 			perror("Error receiving data.");
 			exit(1);
@@ -202,17 +203,30 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		time_t t = time(NULL);
 		struct tm *tm = localtime(&t);
 		char sTime[64];
-		strftime(sTime, sizeof(sTime), "%c", tm);
-		PrintReceivedMsg(sTime, buf, res);
+		strftime(sTime, sizeof(sTime), "%G", tm);
+		PrintReceivedMsg(sTime, rxbuf, res);
 
 
-		if ((buf[3]==0x0C) && (buf[4]==0x72)) {
-			float t = DptValueTemp2Float(&buf[8]);
-			fprintf(stdout, "*** Zona giorno, Ta=%.1f\n", t);
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x72)) {
+			SocketData_Type txbuf;
+			strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
+			txbuf.temperature = DptValueTemp2Float(&rxbuf[8]);
+
+			fprintf(stdout, "%s *** Zona giorno, Ta=%.1f\n", txbuf.time, txbuf.temperature);
+
+			int retsize;
+			if (write(socket, &txbuf, retsize) != sizeof(txbuf)) {
+				if (retsize)
+					fprintf(stderr, "partial write");
+				else {
+					perror("write error");
+					exit(-1);
+				}
+			}
 		}
 
-		if ((buf[3]==0x0C) && (buf[4]==0x99)) {
-			float t = DptValueTemp2Float(&buf[8]);
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x99)) {
+			float t = DptValueTemp2Float(&rxbuf[8]);
 			fprintf(stdout, "*** Zona notte, Ta=%.1f\n", t);
 		}
 
@@ -307,7 +321,10 @@ int main(int argc, char* argv[]) {
 
 	// Creating thread to handle the received message
 	pthread_t threadRx;
-	if (pthread_create(&threadRx, NULL, ThreadKnxRx, pDevice)) {
+	ThreadKnxArgs_Type threadRxArgs;
+	threadRxArgs.pDevice = pDevice;
+	threadRxArgs.socket = cl;
+	if (pthread_create(&threadRx, NULL, ThreadKnxRx, &threadRxArgs)) {
 		perror("Error creating thread");
 		exit(1);
 	}

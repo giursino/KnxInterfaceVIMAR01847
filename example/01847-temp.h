@@ -38,10 +38,16 @@
 
 //-START------------------------------ Types ---------------------------------//
 typedef struct {
-	int time;
+	char time[32];
 	float temperature;
 
 } SocketData_Type;
+
+typedef struct {
+	hid_device* pDevice;
+	int socket;
+
+} ThreadKnxArgs_Type;
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//
