@@ -38,6 +38,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <signal.h>
 #include "config.h"
 #include "libknxusb.h"
 #include "01847-temp.h"
@@ -68,6 +69,7 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 //-PUBLIC-
 //-PRIVATE-
 LOCAL char *socket_path = SOCKET_FILE;
+LOCAL bool toexit = false;
 //-END------------------------------ Variables -------------------------------//
 
 
@@ -218,6 +220,21 @@ LOCAL void* ThreadKnxRx(void *arg) {
 	return NULL;
 }
 
+
+/// Signal handler, to exit from main loop
+LOCAL void SignalHandler(int signo) {
+	switch  (signo) {
+		case SIGINT:
+		case SIGTERM:
+			printf("Catched signal %i.\n", signo);
+			toexit=true;
+			break;
+		default:
+			break;
+	}
+
+}
+
 /// Main function
 ///
 int main(int argc, char* argv[]) {
@@ -227,7 +244,6 @@ int main(int argc, char* argv[]) {
 	hid_device* pDevice;
 	int res;
 	int ch;
-	bool toexit = false;
 
 
 	// Init Lib Knx Usb
@@ -241,11 +257,13 @@ int main(int argc, char* argv[]) {
 	// Create socket to comunicate with other modules
 	int fd;
 #ifdef CONNECTION_ORIENTED
+	printf("Mode: Connection-oriented\n");
 	if ( (fd = socket(AF_UNIX, SOCK_STREAM , 0)) == -1) {
 		perror("Socket error");
 		exit(1);
 	}
 #else
+	printf("Mode: Connection-less\n");
 	if ( (fd = socket(AF_UNIX, SOCK_DGRAM, 0)) == -1) {
 		perror("Socket error");
 		exit(1);
@@ -270,6 +288,7 @@ int main(int argc, char* argv[]) {
 
 #ifdef CONNECTION_ORIENTED
 	// Listening to new connections
+	printf("Waiting connection from client...\n");
 	if (listen(fd, 5) == -1) {
 		perror("listen error");
 		exit(1);
@@ -281,6 +300,7 @@ int main(int argc, char* argv[]) {
 		perror("accept error");
 		exit(1);
 	}
+	printf("Connected.\n");
 #else
 	int cl = fd;
 #endif
@@ -292,6 +312,24 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
+
+#ifdef DEMON
+
+	// Register signal handler
+	if (signal(SIGINT, SignalHandler) == SIG_ERR) {
+		perror("Cannot catch SIGINT");
+		exit(1);
+	}
+	if (signal(SIGTERM, SignalHandler) == SIG_ERR) {
+		perror("Cannot catch SIGTERM");
+		exit(1);
+	}
+
+	printf("Monitoring and sleeping...\n");
+	while(!toexit) {
+		sleep(1);
+	}
+#else
 	printf("Press 'q' to quit...\n");
 	while(!toexit) {
 
@@ -358,6 +396,7 @@ int main(int argc, char* argv[]) {
 
 
 	}
+#endif
 
 	// End thread
 	if (pthread_cancel(threadRx)) {

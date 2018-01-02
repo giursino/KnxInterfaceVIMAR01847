@@ -84,11 +84,13 @@ int main(int argc, char *argv[]) {
 	if (argc > 1)
 		socket_path = argv[1];
 #ifdef CONNECTION_ORIENTED
+	printf("Mode: Connection-oriented\n");
 	if ((fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
 		perror("socket error");
 		exit(-1);
 	}
 #else
+	printf("Mode: Connection-less\n");
 	if ((fd = socket(AF_UNIX, SOCK_DGRAM, 0)) == -1) {
 		perror("socket error");
 		exit(-1);

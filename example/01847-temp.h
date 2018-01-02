@@ -31,6 +31,8 @@
 
 //#define CONNECTIONLESS
 #define CONNECTION_ORIENTED
+
+#define DEMON
 //-END----------------------------- Definitions ------------------------------//
 
 
