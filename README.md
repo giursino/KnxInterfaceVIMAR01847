@@ -7,3 +7,4 @@ apt-get install build-essential autotools-dev autoconf automake autoconf-archive
 apt-get install libcmocka0 libcmocka-dev
 apt-get install libhidapi-hidraw0 libhidapi-dev libhidapi-hidraw0-dbg udev
 apt-get install python-plotly
+apt-get install libncurses5-dev
