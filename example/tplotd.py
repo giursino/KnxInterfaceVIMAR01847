@@ -24,21 +24,33 @@ except socket.error, msg:
 
 try:
 
-    unpacker = struct.Struct('I f')
+    unpacker = struct.Struct('32s 32s f')
     
     while True:
-        data = sock.recv(1024)
-        print >>sys.stderr, 'received "%s"' % binascii.hexlify(data)
+        try:
+            data = sock.recv(68)
+            print >>sys.stderr, 'received "%s"' % binascii.hexlify(data)
 
-        unpacked_data = unpacker.unpack(data)
-        print >>sys.stderr, 'unpacked:', unpacked_data
+            unpacked_data = unpacker.unpack(data)
+            print >>sys.stderr, 'unpacked:', unpacked_data
 
+            t=unpacked_data[0].split(b'\0',1)[0]
+            track=unpacked_data[1].split(b'\0',1)[0]
+            value=unpacked_data[2]
 
-        new_data = Scatter(x=unpacked_data[0], y=unpacked_data[1] )
+            print 'time=%s' % t 
+            print 'track=%s' % track
+            print 'value=%s' % value
 
-        data = Data( [ new_data ] )
+            #new_data = Scatter(x=t, y=value )
 
-        plot_url = py.plot(data, filename='prova', fileopt='extend', auto_open=False)
+            #data = Data( [ new_data ] )
+
+            #plot_url = py.plot(data, filename='temperatura', fileopt='extend', auto_open=False)
+        
+        except KeyboardInterrupt:
+            print 'Exiting..'
+            sys.exit()
 
 finally:
     print >>sys.stderr, 'closing socket'
