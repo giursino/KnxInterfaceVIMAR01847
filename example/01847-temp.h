@@ -39,7 +39,8 @@
 //-START------------------------------ Types ---------------------------------//
 typedef struct {
 	char time[32];
-	float temperature;
+	char track[32];
+	float value;
 
 } SocketData_Type;
 

@@ -209,24 +209,28 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		// Send to socket
 		SocketData_Type txbuf;
 		bool tosend = true;  /* TODO change to false! */
-		txbuf.temperature = 99.9; /* TODO remove*/
+		txbuf.value = 0; /* TODO remove*/
+		sprintf(txbuf.track, "Unknown");
 		strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
 
 		// Ta zona giorno
 		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x72)) {
-			txbuf.temperature = DptValueTemp2Float(&rxbuf[8]);
-			fprintf(stdout, "*** Zona giorno, Ta=%.1f ***\n", txbuf.temperature);
+			sprintf(txbuf.track, "Ta_giorno");
+			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
+			fprintf(stdout, "*** Zona giorno, Ta=%.1f ***\n", txbuf.value);
 			tosend=true;
 		}
 
 		// Ta zona notte
 		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x99)) {
-			txbuf.temperature = DptValueTemp2Float(&rxbuf[8]);
-			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.temperature);
+			sprintf(txbuf.track, "Ta_notte");
+			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
+			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.value);
 			tosend=true;
 		}
 
 		if (tosend) {
+			fprintf(stdout, "Sending data: time=\"%s\" track=\"%s\" value=%f\n", txbuf.time, txbuf.track, txbuf.value);
 			if ((res = write(socket, &txbuf, sizeof(txbuf))) != sizeof(txbuf)) {
 				if (res)
 					fprintf(stderr, "partial write");

@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
 			SocketData_Type buf;
 			rc = read(fd, &buf, sizeof(buf));
 			if (rc > 0) {
-				fprintf(stdout, "read %i bytes: time: %s, temperature=%f\n", rc, buf.time, buf.temperature);
+				fprintf(stdout, "read %i bytes: time: %s, track: %s, temperature=%f\n", rc, buf.time, buf.track, buf.value);
 			}
 			else {
 				perror("read error");
