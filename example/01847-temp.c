@@ -339,10 +339,11 @@ int main(int argc, char* argv[]) {
 #endif
 
 	{
+		static int count=0;
 		SocketData_Type buf;
 		int rc = sizeof(buf);
-		buf.time=12;
-		buf.temperature=12.5;
+		buf.time=(count++);
+		buf.temperature=rand();
 		printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
 
 		if (write(cl, &buf, rc) != rc) {
