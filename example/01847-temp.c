@@ -203,7 +203,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		time_t t = time(NULL);
 		struct tm *tm = localtime(&t);
 		char sTime[64];
-		strftime(sTime, sizeof(sTime), "%G", tm);
+		strftime(sTime, sizeof(sTime), "%c", tm);
 		PrintReceivedMsg(sTime, rxbuf, res);
 
 
