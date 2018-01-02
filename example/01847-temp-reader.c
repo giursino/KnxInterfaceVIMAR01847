@@ -123,7 +123,7 @@ int main(int argc, char *argv[]) {
 				fprintf(stdout, "read %i bytes: time: %s, temperature=%f\n", rc, buf.time, buf.temperature);
 			}
 			else {
-				perror("write error");
+				perror("read error");
 				exit(-1);
 			}
 		}

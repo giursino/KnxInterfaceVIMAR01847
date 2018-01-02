@@ -206,17 +206,29 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		strftime(sTime, sizeof(sTime), "%c", tm);
 		PrintReceivedMsg(sTime, rxbuf, res);
 
+		// Send to socket
+		SocketData_Type txbuf;
+		bool tosend = true;  /* TODO change to false! */
+		txbuf.temperature = 99.9; /* TODO remove*/
+		strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
 
+		// Ta zona giorno
 		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x72)) {
-			SocketData_Type txbuf;
-			strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
 			txbuf.temperature = DptValueTemp2Float(&rxbuf[8]);
+			fprintf(stdout, "*** Zona giorno, Ta=%.1f ***\n", txbuf.temperature);
+			tosend=true;
+		}
 
-			fprintf(stdout, "%s *** Zona giorno, Ta=%.1f\n", txbuf.time, txbuf.temperature);
+		// Ta zona notte
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x99)) {
+			txbuf.temperature = DptValueTemp2Float(&rxbuf[8]);
+			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.temperature);
+			tosend=true;
+		}
 
-			int retsize;
-			if (write(socket, &txbuf, retsize) != sizeof(txbuf)) {
-				if (retsize)
+		if (tosend) {
+			if ((res = write(socket, &txbuf, sizeof(txbuf))) != sizeof(txbuf)) {
+				if (res)
 					fprintf(stderr, "partial write");
 				else {
 					perror("write error");
@@ -224,12 +236,6 @@ LOCAL void* ThreadKnxRx(void *arg) {
 				}
 			}
 		}
-
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x99)) {
-			float t = DptValueTemp2Float(&rxbuf[8]);
-			fprintf(stdout, "*** Zona notte, Ta=%.1f\n", t);
-		}
-
 	}
 	return NULL;
 }
