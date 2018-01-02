@@ -32,7 +32,7 @@
 //#define CONNECTIONLESS
 #define CONNECTION_ORIENTED
 
-#define DEMON
+#define DAEMON
 //-END----------------------------- Definitions ------------------------------//
 
 

@@ -313,7 +313,7 @@ int main(int argc, char* argv[]) {
 	}
 
 
-#ifdef DEMON
+#ifdef DAEMON
 
 	// Register signal handler
 	if (signal(SIGINT, SignalHandler) == SIG_ERR) {
