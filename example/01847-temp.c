@@ -312,9 +312,6 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-
-#ifdef DAEMON
-
 	// Register signal handler
 	if (signal(SIGINT, SignalHandler) == SIG_ERR) {
 		perror("Cannot catch SIGINT");
@@ -325,20 +322,24 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	printf("Monitoring and sleeping...\n");
-	while(!toexit) {
-		sleep(1);
-	}
-#else
-	printf("Press 'q' to quit...\n");
+	printf("Monitoring and sleeping ()...\n");
+
+#ifndef DAEMON
+	printf("Press 'q' or Ctrl-C or kill to to quit...\n");
+#endif
+
 	while(!toexit) {
 
+#ifdef DAEMON
+		sleep(1);
+
+#else
 		ch = getchar();
 		if (ch == 'q') {
 			toexit = true;
 		}
 
-#if DEBUG
+	#if DEBUG
 	{
 		uint8_t tfix[2] = {0x0C, 0x1A};
 		float t = DptValueTemp2Float(tfix);
@@ -374,7 +375,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-#endif
+	#endif
 
 	{
 		static int count=0;
@@ -394,9 +395,9 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
+#endif
 
 	}
-#endif
 
 	// End thread
 	if (pthread_cancel(threadRx)) {
