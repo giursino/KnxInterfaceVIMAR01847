@@ -339,7 +339,7 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 
-	printf("Monitoring and sleeping ()...\n");
+	printf("Monitoring and sleeping...\n");
 
 #ifndef DAEMON
 	printf("Press 'q' or Ctrl-C or kill to to quit...\n");
