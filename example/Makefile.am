@@ -85,7 +85,8 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # Data files to be included in distro but not to be installed.
-EXTRA_DIST = 
+EXTRA_DIST = \
+	tplotd.py
 
 	
 MAINTAINERCLEANFILES = \
