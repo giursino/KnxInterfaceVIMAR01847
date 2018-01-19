@@ -221,6 +221,14 @@ LOCAL void* ThreadKnxRx(void *arg) {
 			tosend=true;
 		}
 
+		// T esterna
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x60)) {
+			sprintf(txbuf.track, "T_ext");
+			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
+			fprintf(stdout, "*** Temperatura esterna, T=%.1f ***\n", txbuf.value);
+			tosend=true;
+		}
+
 		// Ta zona notte
 		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x87)) {
 			sprintf(txbuf.track, "Ta_notte");
@@ -228,6 +236,33 @@ LOCAL void* ThreadKnxRx(void *arg) {
 			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.value);
 			tosend=true;
 		}
+		
+		// Valvola zona giorno
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x6F)) {
+			sprintf(txbuf.track, "Valvola_giorno");
+			if (rxbuf[7]==0x84) {
+				txbuf.value = 1;
+			}
+			else {
+				txbuf.value = 0;
+			}
+			fprintf(stdout, "*** Valvola giorno = %.0f ***\n", txbuf.value);
+			tosend=true;
+		}
+
+		// Valvola zona notte
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0xAB)) {
+			sprintf(txbuf.track, "Valvola_notte");
+			if (rxbuf[7]==0x81) {
+				txbuf.value = 1;
+			}
+			else {
+				txbuf.value = 0;
+			}
+			fprintf(stdout, "*** Valvola notte = %.0f ***\n", txbuf.value);
+			tosend=true;
+		}
+
 
 		if (tosend) {
 			fprintf(stdout, "Sending data: time=\"%s\" track=\"%s\" value=%f\n", txbuf.time, txbuf.track, txbuf.value);
