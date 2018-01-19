@@ -222,7 +222,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		}
 
 		// Ta zona notte
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x99)) {
+		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x87)) {
 			sprintf(txbuf.track, "Ta_notte");
 			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
 			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.value);
