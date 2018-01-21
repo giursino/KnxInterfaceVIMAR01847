@@ -2,6 +2,7 @@ import binascii
 import socket
 import struct
 import sys
+import time
 
 import plotly.plotly as py
 import plotly.tools as tls
@@ -142,16 +143,30 @@ try:
             print 'track=%s' % track
             print 'value=%s' % value
             
-            if track == 'Ta_giorno':
-                s_Ta.write(dict(x=t, y=value))
-            elif track == 'Valvola_giorno':
-                s_V.write(dict(x=t, y=value))
-            elif track == 'T_ext':
-                s_Te.write(dict(x=t, y=value))
-            if track == 'Ta_notte':
-                s_TaN.write(dict(x=t, y=value))
-            elif track == 'Valvola_notte':
-                s_VN.write(dict(x=t, y=value))
+            retry = 3
+            
+            while retry:
+            
+                try:
+                    if track == 'Ta_giorno':
+                        s_Ta.write(dict(x=t, y=value))
+                    elif track == 'Valvola_giorno':
+                        s_V.write(dict(x=t, y=value))
+                    elif track == 'T_ext':
+                        s_Te.write(dict(x=t, y=value))
+                    if track == 'Ta_notte':
+                        s_TaN.write(dict(x=t, y=value))
+                    elif track == 'Valvola_notte':
+                        s_VN.write(dict(x=t, y=value))
+                        
+                    break
+                    
+                except:
+                    print >>sys.stderr, 'WARNING: stream write failed, retrying...'
+                    time.sleep(3)
+                    retry -= 1
+                    if (retry == 0):
+                        print >>sys.stderr, 'ERROR: stream write failed, stop retrying. Data lost.'
                         
             print >>sys.stderr, '***********'
             
@@ -170,3 +185,4 @@ finally:
     
     s_TaN.close()
     s_VN.close()
+    print >>sys.stderr, 'done.'
