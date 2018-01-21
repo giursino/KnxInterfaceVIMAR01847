@@ -51,7 +51,12 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=data, layout=layout)
-plot_url = py.plot(fig, filename='temperatura-rep-giorno', fileopt='extend', auto_open=False)
+plot_url = py.plot(
+    fig, 
+    filename='temperatura-rep-giorno', 
+    # fileopt='extend', 
+    auto_open=False
+)
 
 # Setup Stream object
 s_Ta = py.Stream(stream_id='frxfxqesod')
@@ -103,7 +108,12 @@ layout = go.Layout(
 )
 
 fig = go.Figure(data=data, layout=layout)
-plot_url = py.plot(fig, filename='temperatura-rep-notte', fileopt='extend', auto_open=False)
+plot_url = py.plot(
+    fig,
+    filename='temperatura-rep-notte',
+    # fileopt='extend',
+    auto_open=False
+)
 
 # Setup Stream object
 s_TaN = py.Stream(stream_id='z6wiwrjgs4')
