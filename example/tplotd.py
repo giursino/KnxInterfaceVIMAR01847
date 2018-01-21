@@ -25,7 +25,14 @@ stream_TEsterna = dict(token='j3cczgsj6q', maxpoints=10000)
 
 # Setup Plotly graph
 trace_TaGiorno = go.Scatter(x=[], y=[], stream=stream_TaGiorno, name='Ta giorno')
-trace_ValvolaGiorno = go.Scatter(x=[], y=[], stream=stream_ValvolaGiorno, yaxis='y2', name='Valvola giorno', marker=dict(color='rgb(148, 103, 189)'))
+trace_ValvolaGiorno = go.Scatter(
+    x=[], y=[], 
+    stream=stream_ValvolaGiorno, 
+    yaxis='y2', 
+    name='Valvola giorno', 
+    marker=dict(color='rgb(148, 103, 189)'),
+    line=dict(shape='hv')
+)
 trace_TEsterna = go.Scatter(x=[], y=[], stream=stream_TEsterna, name='T esterna', marker=dict(color='rgb(0, 103, 0)'))
 
 data = [trace_TaGiorno, trace_ValvolaGiorno, trace_TEsterna]
@@ -36,12 +43,8 @@ layout = go.Layout(
     ),
     yaxis2=dict(
         title='On/Off',
-        titlefont=dict(
-            color='rgb(148, 103, 189)'
-        ),
-        tickfont=dict(
-            color='rgb(148, 103, 189)'
-        ),
+        titlefont=dict(color='rgb(148, 103, 189)'),
+        tickfont=dict(color='rgb(148, 103, 189)'),
         overlaying='y',
         side='right'
     )
@@ -70,7 +73,14 @@ stream_TEsterna = dict(token='j3cczgsj6q', maxpoints=10000)
 
 # Setup Plotly graph
 trace_TaNotte = go.Scatter(x=[], y=[], stream=stream_TaNotte, name='Ta notte')
-trace_ValvolaNotte = go.Scatter(x=[], y=[], stream=stream_ValvolaNotte, yaxis='y2', name='Valvola notte', marker=dict(color='rgb(148, 103, 189)'))
+trace_ValvolaNotte = go.Scatter(
+    x=[], y=[], 
+    stream=stream_ValvolaNotte, 
+    yaxis='y2', 
+    name='Valvola notte', 
+    marker=dict(color='rgb(148, 103, 189)'),
+    line=dict(shape='hv')
+)
 trace_TEsterna = go.Scatter(x=[], y=[], stream=stream_TEsterna, name='T esterna', marker=dict(color='rgb(0, 103, 0)'))
 
 data = [trace_TaNotte, trace_ValvolaNotte, trace_TEsterna]
