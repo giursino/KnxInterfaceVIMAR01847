@@ -15,6 +15,8 @@
 // -----
 //
 
+#ifndef __01847_TEMP_H_
+#define __01847_TEMP_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -62,4 +64,4 @@ typedef struct {
 
 //-START----------------------- Functions Declaration ------------------------//
 //-END------------------------- Functions Declaration ------------------------//
-
+#endif
