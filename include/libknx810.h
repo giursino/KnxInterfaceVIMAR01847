@@ -15,6 +15,8 @@
 // -----
 //
 
+#ifndef LIBKNX810_H_
+#define LIBKNX810_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -80,5 +82,5 @@ GLOBAL int LK8_ReceiveRawMessage(int pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
 
 //-END------------------------- Functions Declaration ------------------------//
 
-
+#endif
 

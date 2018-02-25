@@ -14,7 +14,8 @@
 // $Id$
 // -----
 //
-
+#ifndef LIBKNX810_PRIV_H_
+#define LIBKNX810_PRIV_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -85,5 +86,5 @@
 
 //-START----------------------- Functions Declaration ------------------------//
 //-END------------------------- Functions Declaration ------------------------//
-
+#endif
 
