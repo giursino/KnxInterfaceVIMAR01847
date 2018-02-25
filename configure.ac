@@ -28,6 +28,7 @@ AC_CONFIG_FILES(
 	Makefile 
 	example/Makefile
 	libknxusb/Makefile
+	libknx810/Makefile
 	include/Makefile
 	tests/Makefile
 )
