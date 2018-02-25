@@ -13,7 +13,8 @@ noinst_PROGRAMS= \
 	01847-test \
 	01847-test-nolib \
 	01847-temp-reader \
-	KNXTinySerial-test
+	KNXTinySerial-test \
+	KNXTinySerial-libtest
 
 #######################################
 # Build information for each executable. The variable name is derived
@@ -80,14 +81,34 @@ ACLOCAL_AMFLAGS=-I ../m4
 	$(PTHREAD_CFLAGS) 
 
 
+
 # Test del Programma di test della temperatura
 01847_temp_reader_SOURCES = \
 	01847-temp-reader.c 
 
 
+
 # Test dell'hw KNX Tiny Serial 810
 KNXTinySerial_test_SOURCES = \
 	KNXTinySerial-test.c
+
+
+
+# Test della libreria libknx810
+KNXTinySerial_libtest_SOURCES = \
+	KNXTinySerial-libtest.c
+	
+KNXTinySerial_libtest_LDADD = \
+	$(top_builddir)/libknx810/libknx810.la \
+	$(PTHREAD_LIBS)
+
+KNXTinySerial_libtest_LDFLAGS = \
+	-rpath `cd $(top_builddir);pwd`/libknx810/.libs -lm
+
+KNXTinySerial_libtest_CPPFLAGS = \
+	-I$(top_srcdir)/include \
+	$(PTHREAD_CFLAGS) 
+
 
 
 # Data files to be included in distro but not to be installed.
@@ -99,4 +120,7 @@ MAINTAINERCLEANFILES = \
 	Makefile.in \
 	01847-test \
 	01847-test-nolib \
-	01847-temp 
+	01847-temp \
+	01847-temp-reader \
+	KNXTinySerial-test \
+	KNXTinySerial-libtest
