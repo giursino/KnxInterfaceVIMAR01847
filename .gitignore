@@ -38,3 +38,4 @@ tests/test_libknxusb
 .dirstamp
 example/01847-temp-reader
 example/tplotd_setup.py
+KNXTinySerial-test
