@@ -3,6 +3,11 @@
 TARGET=ggrasp
 SYSROOT=/mnt/ggrasp
 
+# TODO
+# 1. aggiungere clonazione compilatore (raspberrypi/tools)
+# 2. creazione cartella /mnt/ggrasp
+
+
 echo "checking sysroot..."
 if [ ! -e ${SYSROOT}/usr/bin ]; then
 	sudo mount $TARGET:/ $SYSROOT
