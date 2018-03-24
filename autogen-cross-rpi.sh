@@ -5,7 +5,7 @@ SYSROOT=/mnt/ggrasp
 
 
 echo -n "checking cross gcc..."
-if `arm-linux-gnueabihf-gcwc -v > /dev/null 2>&1`; then
+if `arm-linux-gnueabihf-gcc -v > /dev/null 2>&1`; then
 	echo "ok"
 else
 	echo "fail"
