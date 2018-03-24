@@ -3,21 +3,45 @@
 TARGET=ggrasp
 SYSROOT=/mnt/ggrasp
 
-# TODO
-# 1. aggiungere clonazione compilatore (raspberrypi/tools)
-# 2. creazione cartella /mnt/ggrasp
+
+echo -n "checking cross gcc..."
+if `arm-linux-gnueabihf-gcwc -v > /dev/null 2>&1`; then
+	echo "ok"
+else
+	echo "fail"
+	echo "Please install or check cross-compiler path"
+	echo "HINT: "
+	echo " mkdir -p /opt/rpi-sdk"
+	echo " cd /opt/rpi-sdk"
+	echo " git clone https://github.com/raspberrypi/tools"
+	echo ' echo "PATH=$PATH:/opt/rpi-sdk/arm-bcm2708/gcc-linaro-arm-linux-gnueabihf-raspbian-x64/bin" > ~/.profile'
+	echo "FATAL ERROR"
+	exit 1
+fi
 
 
-echo "checking sysroot..."
+echo -n "checking sysroot..."
+if [ ! -d ${SYSROOT} ]; then
+	echo "created ${SYSROOT}"
+	mkdir -p ${SYSROOT}
+else
+	echo "ok"
+fi
+
+echo -n "mounting ${SYSROOT}..."
 if [ ! -e ${SYSROOT}/usr/bin ]; then
 	sudo mount $TARGET:/ $SYSROOT
+	echo "ok"
+else
+	echo "already mounted"
 fi
 
 echo "maintainer cleaning..."
 make maintainer-clean
 
-echo "other cleaning..."
+echo -n "other cleaning..."
 rm -rf Makefile.in autom4te.cache config.* compile configure depcomp install-sh ltmain missing test-driver aclocal.m4
+echo "ok"
 
 echo "libtolizing..."
 libtoolize --automake
