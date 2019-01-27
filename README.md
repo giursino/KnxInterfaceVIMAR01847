@@ -1,4 +1,4 @@
-# USB KNX Interface VIMAR 01847
+# KNX Interface VIMAR 01847
 
 This project enables the access on Linux box to the KNX bus using the [USB KNX interface "01847"](https://www.vimar.com/it/it/catalog/product/index/code/01993) by [VIMAR](www.vimar.com). 
 
