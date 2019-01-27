@@ -4,7 +4,7 @@ This project enables the access on Linux box to the KNX bus using the [USB KNX i
 
 Now with the "C" library `libknxusb` you can send and receive messages on Linux box with the VIMAR USB KNX interface "01847".
 
-This project includes many code example to use the library.
+This project includes many code examples to use the library.
 
 ## Requirements
 ```
