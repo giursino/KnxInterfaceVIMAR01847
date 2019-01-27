@@ -16,16 +16,15 @@ make
 ## Install
 ```
 make install
-
-cp udev/99-vimar-01847.rules /etc/udev/rules.d
-
-unplug 01847 device
-
-sudo /etc/init.d/udev restart
 ```
-Plug 01847 device and check if `/dev/vimar-01847` exists when 01847 is plugged.
-If interface was not found, restart the system.
 
+### Install 01847 device on Linux system
+1. Copy udev rules: `sudo cp udev/99-vimar-01847.rules /etc/udev/rules.d`
+2. Unplug 01847 device
+3. Restart udev: `sudo /etc/init.d/udev restart`
+4. Plug 01847 device 
+5. Check if `/dev/vimar-01847` exists when 01847 is plugged.
+6. If interface was not found, restart the system.
 
 ## Usage
 ```
