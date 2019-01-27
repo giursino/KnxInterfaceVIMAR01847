@@ -15,8 +15,8 @@
 // -----
 //
 
-#ifndef __01847_TEST_H_
-#define __01847_TEST_H_
+#ifndef __01847_TEMP_H_
+#define __01847_TEMP_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -29,20 +29,28 @@
 #endif
 #define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
 
-/// Print message on log
-#define LogPrint(strprefix, ...)		{       \
-	if ((strprefix) && (strlen(strprefix))) {   \
-		wprintw(wlog, "%s: ", strprefix);       \
-	}                                           \
-	wprintw(wlog, __VA_ARGS__);                 \
-	wprintw(wlog, "\n");                        \
-	wrefresh(wlog);                             \
-}
+#define SOCKET_FILE		"/tmp/01847-temp"
 
+//#define CONNECTIONLESS
+#define CONNECTION_ORIENTED
+
+#define DAEMON
 //-END----------------------------- Definitions ------------------------------//
 
 
 //-START------------------------------ Types ---------------------------------//
+typedef struct {
+	char time[32];
+	char track[32];
+	float value;
+
+} SocketData_Type;
+
+typedef struct {
+	hid_device* pDevice;
+	int socket;
+
+} ThreadKnxArgs_Type;
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//

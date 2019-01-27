@@ -15,6 +15,8 @@
 // -----
 //
 
+#ifndef LIBKNXUSB_H_
+#define LIBKNXUSB_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -80,5 +82,5 @@ GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8M
 
 //-END------------------------- Functions Declaration ------------------------//
 
-
+#endif
 

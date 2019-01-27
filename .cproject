@@ -42,6 +42,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="example"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="libknx810"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="libknxusb"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="tests"/>
 					</sourceEntries>
@@ -77,7 +78,7 @@
 							</tool>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.debug.1886846753" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.debug"/>
 							<tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.debug.1891752856" name="GCC C Compiler" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.gcc.debug">
-								<option id="gnu.c.compiler.option.include.paths.1662029991" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+								<option id="gnu.c.compiler.option.include.paths.1662029991" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.853666404" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -87,6 +88,7 @@
 					</folderInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="example"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="libknx810"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="libknxusb"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="tests"/>
 					</sourceEntries>

@@ -25,6 +25,7 @@ ltmain.sh
 .deps
 01847-test
 01847-test-nolib
+01847-temp
 .libs
 *.la
 *.lo
@@ -35,3 +36,7 @@ libtool
 test-driver
 tests/test_libknxusb
 .dirstamp
+example/01847-temp-reader
+example/tplotd_setup.py
+KNXTinySerial-test
+KNXTinySerial-libtest

@@ -4,11 +4,17 @@ This project enables the access on Linux box to the KNX bus using the [USB KNX i
 
 Now you can send and receive messages on Linux box with the VIMAR USB KNX interface "01847"!
 
+## Requirements
+```
+apt-get install build-essential autotools-dev autoconf automake autoconf-archive gnu-standards autoconf-doc libtool
+apt-get install libcmocka0 libcmocka-dev
+apt-get install libhidapi-hidraw0 libhidapi-dev libhidapi-hidraw0-dbg udev
+apt-get install python-plotly
+apt-get install libncurses5-dev
+```
+
 ## Build
 ```
-sudo apt-get install build-essential pkgconf autoconf automake libtool autoconf-archive
-sudo apt-get install libcmocka-dev libhidapi-dev libncurses5-dev
-
 ./autogen.sh  (or autogen-cross-rpi.sh to cross compile to raspberry-pi)
 make
 ```

@@ -1,4 +1,4 @@
-SUBDIRS=libknxusb include example tests
+SUBDIRS=libknxusb libknx810 include example tests
 
 EXTRA_DIST=udev
 

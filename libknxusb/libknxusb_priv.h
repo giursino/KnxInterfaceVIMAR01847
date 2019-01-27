@@ -15,6 +15,8 @@
 // -----
 //
 
+#ifndef LIBKNXUSB_PRIV_H_
+#define LIBKNXUSB_PRIV_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
@@ -91,4 +93,4 @@
 //-START----------------------- Functions Declaration ------------------------//
 //-END------------------------- Functions Declaration ------------------------//
 
-
+#endif
