@@ -24,3 +24,14 @@ config.*
 ltmain.sh
 .deps
 01847-test
+01847-test-nolib
+.libs
+*.la
+*.lo
+libtool
+*.tar.gz
+*.log
+*.trs
+test-driver
+tests/test_libknxusb
+.dirstamp

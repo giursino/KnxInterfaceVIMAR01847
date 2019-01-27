@@ -1,3 +1,0 @@
-bin_PROGRAMS=01847-test
-01847_test_SOURCES=01847-test.c
-
