@@ -4,10 +4,9 @@
 # in the $(bindir) directory. For example /usr/bin
 #bin_PROGRAMS=exampleProgram
 
-# Because a.out is only a sample program we don't want it to be installed.
 # The 'noinst_' prefix indicates that the following targets are not to be
 # installed.
-noinst_PROGRAMS=01847-test 01847-test-nolib
+bin_PROGRAMS=01847-test 01847-test-nolib
 
 #######################################
 # Build information for each executable. The variable name is derived
