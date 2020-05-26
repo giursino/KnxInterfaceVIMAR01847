@@ -5,6 +5,7 @@
 bin_PROGRAMS= \
 	01847-test \
 	01847-test-nolib \
+	01847-sendmsg \
 	01847-temp \ 
 	01847-temp-reader \
 	KNXTinySerial-test \
@@ -55,6 +56,25 @@ ACLOCAL_AMFLAGS=-I ../m4
 # Programma di test che non usa la libreria
 01847_test_nolib_SOURCES= \
 	01847-test-nolib.c 
+
+
+
+
+# Programma di test per inviare messaggi da riga di comando
+01847_sendmsg_SOURCES= \
+	01847-sendmsg.c
+
+# Libraries
+01847_sendmsg_LDADD = \
+	$(top_builddir)/libknxusb/libknxusb.la
+
+# Linker options
+01847_sendmsg_LDFLAGS = \
+	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs
+
+# Compiler options
+01847_sendmsg_CPPFLAGS = \
+	-I$(top_srcdir)/include
 
 
 
@@ -118,6 +138,7 @@ MAINTAINERCLEANFILES = \
 	Makefile.in \
 	01847-test \
 	01847-test-nolib \
+	01847-sendmsg \
 	01847-temp \
 	01847-temp-reader \
 	KNXTinySerial-test \
