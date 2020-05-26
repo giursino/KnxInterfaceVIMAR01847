@@ -146,7 +146,7 @@ int main(int argc, char* argv[]) {
 	// Init Lib Knx Usb
 	res = LKU_Init(&pDevice);
 	if (res < 0) {
-		perror("LKU_Init");
+		fprintf(stderr, "ERROR: cannot init library LKU.\n");
 		exit(1);
 	}
 	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
@@ -159,7 +159,7 @@ int main(int argc, char* argv[]) {
 
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
-		perror("LKU_Deinit");
+		fprintf(stderr, "ERROR: cannot de-init library LKU.\n");
 		exit(1);
 	}
 
