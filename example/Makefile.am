@@ -11,7 +11,7 @@ bin_PROGRAMS= \
 	01847-temp-reader \
 	KNXTinySerial-t01847-sendmsg-nolibest \
 	KNXTinySerial-libtest
-	
+
 # The 'noinst_' prefix indicates that the following targets are not to be
 # installed.
 noinst_PROGRAMS=
@@ -28,7 +28,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per leggere e scrivere messagi su bus, 
+# Programma di esempio per leggere e scrivere messagi su bus,
 # usa grafica ncurses e la libreria per accedere all'interfaccia 01847
 # ------------------------------------------
 # Sources
@@ -52,7 +52,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 01847_test_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(PTHREAD_CFLAGS) \
-	$(CURSES_CPPFLAGS) 
+	$(CURSES_CPPFLAGS)
 
 
 
@@ -78,7 +78,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 # Programma di esempio per leggere i messagi su bus, non usa né grafica né la libreria
 # ------------------------------------------
 01847_busmonitor_nolib_SOURCES= \
-	01847-busmonitor-nolib.c 
+	01847-busmonitor-nolib.c
 
 
 
@@ -86,7 +86,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 # Programma di esempio per inviare messaggi da riga di comando che non usa la libreria
 # ------------------------------------------
 01847_sendmsg_nolib_SOURCES= \
-	01847-sendmsg-nolib.c 
+	01847-sendmsg-nolib.c
 
 
 
@@ -108,7 +108,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 01847_temp_CPPFLAGS = \
 	-I$(top_srcdir)/include \
-	$(PTHREAD_CFLAGS) 
+	$(PTHREAD_CFLAGS)
 
 
 
@@ -116,7 +116,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 # Test del programma di esempio per il monitoraggio della temperatura
 # ------------------------------------------
 01847_temp_reader_SOURCES = \
-	01847-temp-reader.c 
+	01847-temp-reader.c
 
 
 
@@ -133,7 +133,7 @@ KNXTinySerial_test_SOURCES = \
 # ------------------------------------------
 KNXTinySerial_libtest_SOURCES = \
 	KNXTinySerial-libtest.c
-	
+
 KNXTinySerial_libtest_LDADD = \
 	$(top_builddir)/libknx810/libknx810.la \
 	$(PTHREAD_LIBS)
@@ -143,7 +143,7 @@ KNXTinySerial_libtest_LDFLAGS = \
 
 KNXTinySerial_libtest_CPPFLAGS = \
 	-I$(top_srcdir)/include \
-	$(PTHREAD_CFLAGS) 
+	$(PTHREAD_CFLAGS)
 
 
 
@@ -151,7 +151,7 @@ KNXTinySerial_libtest_CPPFLAGS = \
 EXTRA_DIST = \
 	tplotd.py
 
-	
+
 MAINTAINERCLEANFILES = \
 	Makefile.in \
 	01847-busmonitor \
