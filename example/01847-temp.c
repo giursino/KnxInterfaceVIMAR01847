@@ -1,26 +1,10 @@
 //******************************************************************************
 /// @file 01847-temp.c
-/// @brief Applicativo di test per l'articolo 01847
-/// $Author$
-/// $Date$
-/// $Revision$
+/// @brief Example application to monitor temperature using KNX Interface VIMAR 01847
 ///
-///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnote01847-test
+/// @note It create a socket server to send the temperature values gets from KNX bus
 //******************************************************************************
 
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnote01847-test Revision History del modulo 01847-test
-*@section revnote01847-test_rev0 giursino 23:40:27 23 mar 2017
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <math.h>
@@ -236,7 +220,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.value);
 			tosend=true;
 		}
-		
+
 		// Valvola zona giorno
 		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x6F)) {
 			sprintf(txbuf.track, "Valvola_giorno");

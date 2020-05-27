@@ -1,5 +1,7 @@
 /*
- * Applicativo di test per l'articolo 01847
+ * Example application to test the KNX Interface VIMAR 01847
+ * It do not use libknxusb
+ * It only uses libhid
  *
  * Copyright (c) 2017 Giuseppe Ursino
  */
@@ -403,7 +405,7 @@ int main(int argc, char* argv[])
 	printf("hid_open...");
 	handle=NULL;
 	if (handle==NULL) {
-		handle = hid_open(0xc251, 0x1101, NULL);  // 01847 
+		handle = hid_open(0xc251, 0x1101, NULL);  // 01847
 	}
 	if (handle==NULL) {
 		handle = hid_open(0x24a0, 0x1101, NULL);  // 01847
@@ -439,68 +441,8 @@ int main(int argc, char* argv[])
 	printf("%i\n", res);
 	wprintf(L"Indexed String 1: %s\n", wstr);
 
-#if 0
-	// Toggle LED (cmd 0x80). The first byte is the report number (0x0).
-	buf[0] = 0x0;
-	buf[1] = 0x80;
-	res = hid_write(handle, buf, 65);
 
-	// Request state (cmd 0x81). The first byte is the report number (0x0).
-	buf[0] = 0x0;
-	buf[1] = 0x81;
-	res = hid_write(handle, buf, 65);
-#endif
-	
-	unsigned char sBuf[256];
 	int len;
-
-	// Send msg to device
-	printf("Send A_GroupValueWrite to 0x0C00 with value ON.\n");
-	printf("Press enter to continue...");
-	getc(stdin);
-	i=0;
-	// KNX HID Report Header
-	sBuf[i++] = 0x01; //ReportId
-	sBuf[i++] = 0x13; //PacketInfo
-	sBuf[i++] = 0x13; //Datalength
-	// KNX HID Report Body
-	// KNX USB Transfer Protocol Header (only in start packet!)
-	sBuf[i++] = 0x00; //ProtocolVersion
-	sBuf[i++] = 0x08; //HeaderLength
-	sBuf[i++] = 0x00; //BodyLength
-	sBuf[i++] = 0x0b; //    "
-	sBuf[i++] = 0x01; //ProtocolId
-	sBuf[i++] = 0x03; //EMIID (cEMI)
-	sBuf[i++] = 0x00; //ManufacturerCode
-	sBuf[i++] = 0x00; //    "
-	// KNX USB Transfer Protocol Body
-	sBuf[i++] = 0x11; //EMIMessageCode (29=rx, 11=tx)
-	// Data
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0xbc;
-	sBuf[i++] = 0xe0;
-	sBuf[i++] = 0x10;
-	sBuf[i++] = 0x01;
-	sBuf[i++] = 0x0c;
-	sBuf[i++] = 0x0a;
-	sBuf[i++] = 0x01;
-	sBuf[i++] = 0x00;
-	sBuf[i++] = 0x81;
-	len=i;
-	printf("sBuf[%i]:", len);
-	for (i=0; i<len; i++){
-		printf("%.2X ", sBuf[i]);
-	}
-	printf("\n");
-
-	res = hid_write(handle, sBuf, len);
-	if (res < 0) {
-		printf("Error: %d\n", errno);
-		perror("write");
-	} else {
-		printf("write() wrote %d bytes\n", res);
-	}
-
 
 	// Read requested state
 	printf("hid_read...\n");
@@ -510,12 +452,12 @@ int main(int argc, char* argv[])
 		// Print out the returned buffer.
 		if (res < 0) {
 			perror("read");
-		} 
+		}
 		else {
 			time_t timer;
 			char timebuffer[26];
 			struct tm* tm_info;
-			
+
 			time(&timer);
 			tm_info = localtime(&timer);
 			strftime(timebuffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
@@ -553,7 +495,7 @@ int main(int argc, char* argv[])
 			puts("");
 		}
 	}
-	
+
 	// Finalize the hidapi library
 	printf("hid_exit...\n");
 	res = hid_exit();

@@ -1,19 +1,8 @@
 //******************************************************************************
-/// @file 01847-test.h
-/// @brief Header file del modulo 01847-test 
-/// $Author$
-/// $Date$
-/// $Revision$
+/// @brief Example application to monitor temperature using KNX Interface VIMAR 01847
 ///
-///
-///
+/// @note It create a socket server to send the temperature values gets from KNX bus
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
 
 #ifndef __01847_TEMP_H_
 #define __01847_TEMP_H_

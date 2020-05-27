@@ -1,26 +1,16 @@
 //******************************************************************************
-/// @file 01847-test.c
-/// @brief Applicativo di test per l'articolo 01847
+/// @file 01847-busmonitor.c
+/// @brief Example application for VIMAR 01847 KNX interface
 /// $Author$
 /// $Date$
 /// $Revision$
 ///
 ///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnote01847-test
+/// @note Use ncurse to manage the graphics, press:
+//        * 'q' to quit
+//        * 's' to send a message
 //******************************************************************************
 
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnote01847-test Revision History del modulo 01847-test
-*@section revnote01847-test_rev0 giursino 23:40:27 23 mar 2017
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdio.h>
@@ -36,7 +26,7 @@
 #include <pthread.h>
 #include "config.h"
 #include "libknxusb.h"
-#include "01847-test.h"
+#include "01847-busmonitor.h"
 
 #ifdef LOCAL
 	#undef LOCAL

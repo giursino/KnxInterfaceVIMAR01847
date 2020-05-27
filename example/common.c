@@ -9,12 +9,12 @@
 /// it under the terms of the GNU General Public License as published by
 /// the Free Software Foundation; either version 2 of the License, or
 /// (at your option) any later version.
-/// 
+///
 /// This program is distributed in the hope that it will be useful,
 /// but WITHOUT ANY WARRANTY; without even the implied warranty of
 /// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 /// GNU General Public License for more details.
-/// 
+///
 /// You should have received a copy of the GNU General Public License
 /// along with this program; if not, write to the Free Software
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
@@ -56,7 +56,7 @@
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL			///< funzioni o variabili rese disponibili ad altri moduli	
+#define GLOBAL			///< funzioni o variabili rese disponibili ad altri moduli
 //-END----------------------------- Definitions ------------------------------//
 
 //-START------------------------------ Const ---------------------------------//
@@ -90,7 +90,7 @@ LOCAL void	vdbg_message (int priority, const char *fmt, va_list va)
 	if ((ret < 0) || (ret >= (int) sizeof(buf))){
 		fprintf(stderr, "vdbg_message: vsprintf needed more than %d bytes\n", LARGEBUF);
 	}
-	
+
 	if (priority <= debug_verbosity) {
 		fprintf(stderr, "%s", buf);
 	}
@@ -124,9 +124,9 @@ GLOBAL void*	mmalloc (int size) {
 		dbg_message(DBG_WARN, "WARNING: void* mmalloc (int size):\n\tsize must be > 0\n");
 		return NULL;
 	}
-	
+
 	ret = (void*) malloc(size);
-	
+
 	if (ret == NULL) {
 		dbg_message(DBG_ERR, "ERROR: Cannot allocate memory\n");
 		exit(1);
@@ -140,12 +140,12 @@ GLOBAL void*	mmalloc (int size) {
 /// @brief	Duplica una stringa in memoria e ritorna puntatore a nuova stringa
 GLOBAL char*	mstrdup (const char *s) {
 	char *p;
-	
+
 	if (s == NULL) {
 		dbg_message(DBG_WARN, "WARNING: char* mstrdup(char *s):\n\ts is NULL pointer\n");
 		return NULL;
 	}
-	
+
 	p = (char*) ( mmalloc (strlen(s)+1) ); // +1 for '\0'
 	strcpy(p, s);
 	return p;
@@ -199,7 +199,7 @@ GLOBAL long	shextol (const char *str) {
 
 	char	*endptr;
 	long	val;
-	
+
 	if (! isstrhex (str) ) {
 		// la stringa non è esadecimale
 		dbg_message(DBG_WARN, "WARNING: long shextol(char *str):\n\tstr is not hex number\n");
@@ -207,14 +207,14 @@ GLOBAL long	shextol (const char *str) {
 	}
 
 	val = strtol (str, &endptr, 16);
-	
-	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN)) || 
+
+	if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN)) ||
 		(errno != 0 && val == 0) || (endptr == str) ) {
 		// errore
 		dbg_message(DBG_WARN, "WARNING: long shextol(char *str):\n\tstr cannot convert to hex number\n");
 		return -1;
 	}
-	
+
 	return val;
 }
 

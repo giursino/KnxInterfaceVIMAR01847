@@ -1,26 +1,7 @@
 //******************************************************************************
 /// @file KNXTinySerial-libtest.c
-/// @brief test della libreria libknx810
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnoteKNXTinySerial-libtest
+/// @brief Example appplication to test libknx810 library
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnoteKNXTinySerial-libtest Revision History del modulo KNXTinySerial-libtest
-*@section revnoteKNXTinySerial-libtest_rev0 giursino 18:01:09 25 feb 2018
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdio.h>

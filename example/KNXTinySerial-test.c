@@ -1,3 +1,7 @@
+//******************************************************************************
+/// @file KNXTinySerial-test.c
+/// @brief Example appplication to test KnxTinyInterface device without library
+//******************************************************************************
 
 #include <stdio.h>
 #include <fcntl.h>   /* File Control Definitions           */
