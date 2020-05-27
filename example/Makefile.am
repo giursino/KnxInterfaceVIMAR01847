@@ -3,12 +3,13 @@
 # the 'bin_' indicates that these build products will be installed
 # in the $(bindir) directory. For example /usr/bin
 bin_PROGRAMS= \
-	01847-test \
-	01847-test-nolib \
+	01847-busmonitor \
+	01847-busmonitor-nolib \
 	01847-sendmsg \
+	01847-sendmsg-nolib \
 	01847-temp \ 
 	01847-temp-reader \
-	KNXTinySerial-test \
+	KNXTinySerial-t01847-sendmsg-nolibest \
 	KNXTinySerial-libtest
 	
 # The 'noinst_' prefix indicates that the following targets are not to be
@@ -26,6 +27,10 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 
+# ------------------------------------------
+# Programma di esempio per leggere e scrivere messagi su bus, 
+# usa grafica ncurses e la libreria per accedere all'interfaccia 01847
+# ------------------------------------------
 # Sources
 01847_test_SOURCES= \
 	01847-test.c \
@@ -51,36 +56,43 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 
-
-
-# Programma di test che non usa la libreria
-01847_test_nolib_SOURCES= \
-	01847-test-nolib.c 
-
-
-
-
-# Programma di test per inviare messaggi da riga di comando
+# ------------------------------------------
+# Programma di esempio per inviare messaggi da riga di comando
+# ------------------------------------------
 01847_sendmsg_SOURCES= \
 	01847-sendmsg.c
 
-# Libraries
 01847_sendmsg_LDADD = \
 	$(top_builddir)/libknxusb/libknxusb.la
 
-# Linker options
 01847_sendmsg_LDFLAGS = \
 	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs
 
-# Compiler options
 01847_sendmsg_CPPFLAGS = \
 	-I$(top_srcdir)/include
 
 
 
 
+# ------------------------------------------
+# Programma di esempio per leggere i messagi su bus, non usa né grafica né la libreria
+# ------------------------------------------
+01847_busmonitor_nolib_SOURCES= \
+	01847-busmonitor-nolib.c 
 
-# Programma di test della temperatura
+
+
+# ------------------------------------------
+# Programma di esempio per inviare messaggi da riga di comando che non usa la libreria
+# ------------------------------------------
+01847_sendmsg_nolib_SOURCES= \
+	01847-sendmsg-nolib.c 
+
+
+
+# ------------------------------------------
+# Programma di esempio per il monitoraggio della temperatura
+# ------------------------------------------
 01847_temp_SOURCES = \
 	01847-temp.c \
 	01847-temp.h \
@@ -100,19 +112,25 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 
-# Test del Programma di test della temperatura
+# ------------------------------------------
+# Test del programma di esempio per il monitoraggio della temperatura
+# ------------------------------------------
 01847_temp_reader_SOURCES = \
 	01847-temp-reader.c 
 
 
 
+# ------------------------------------------
 # Test dell'hw KNX Tiny Serial 810
+# ------------------------------------------
 KNXTinySerial_test_SOURCES = \
 	KNXTinySerial-test.c
 
 
 
+# ------------------------------------------
 # Test della libreria libknx810
+# ------------------------------------------
 KNXTinySerial_libtest_SOURCES = \
 	KNXTinySerial-libtest.c
 	
@@ -136,9 +154,10 @@ EXTRA_DIST = \
 	
 MAINTAINERCLEANFILES = \
 	Makefile.in \
-	01847-test \
-	01847-test-nolib \
+	01847-busmonitor \
+	01847-busmonitor-nolib \
 	01847-sendmsg \
+	01847-sendmsg-nolib \
 	01847-temp \
 	01847-temp-reader \
 	KNXTinySerial-test \
