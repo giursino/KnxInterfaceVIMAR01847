@@ -32,24 +32,24 @@ ACLOCAL_AMFLAGS=-I ../m4
 # usa grafica ncurses e la libreria per accedere all'interfaccia 01847
 # ------------------------------------------
 # Sources
-01847_test_SOURCES= \
-	01847-test.c \
-	01847-test.h \
+01847_busmonitor_SOURCES= \
+	01847-busmonitor.c \
+	01847-busmonitor.h \
 	common.c \
 	common.h
 
 # Libraries
-01847_test_LDADD = \
+01847_busmonitor_LDADD = \
 	$(top_builddir)/libknxusb/libknxusb.la \
 	$(PTHREAD_LIBS) \
 	$(CURSES_LIBS)
 
 # Linker options
-01847_test_LDFLAGS = \
+01847_busmonitor_LDFLAGS = \
 	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs
 
 # Compiler options
-01847_test_CPPFLAGS = \
+01847_busmonitor_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(PTHREAD_CFLAGS) \
 	$(CURSES_CPPFLAGS)
