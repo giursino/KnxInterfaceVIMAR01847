@@ -41,3 +41,6 @@ example/tplotd_setup.py
 KNXTinySerial-test
 KNXTinySerial-libtest
 example/01847-sendmsg
+example/01847-busmonitor
+example/01847-busmonitor-nolib
+example/01847-sendmsg-nolib
