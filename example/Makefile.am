@@ -7,9 +7,9 @@ bin_PROGRAMS= \
 	01847-busmonitor-nolib \
 	01847-sendmsg \
 	01847-sendmsg-nolib \
-	01847-temp \ 
+	01847-temp \
 	01847-temp-reader \
-	KNXTinySerial-t01847-sendmsg-nolibest \
+	KNXTinySerial-test \
 	KNXTinySerial-libtest
 
 # The 'noinst_' prefix indicates that the following targets are not to be
