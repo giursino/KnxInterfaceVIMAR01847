@@ -260,9 +260,9 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[7];
 	// copy the rest of data byte
 	for (int j=0; j<(u8MsgLDataLen-7); j++) {
-		pMsgCEmi[i+j] = pMsgLData[7+1+j];
+		pMsgCEmi[i++] = pMsgLData[7+1+j];
 	}
-	return i;
+	return i-1;
 }
 
 /// Convert cEmi to L_DATA msg
