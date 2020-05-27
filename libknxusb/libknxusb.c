@@ -234,13 +234,13 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	// KNX HID Report Header
 	pMsgCEmi[i++] = 0x01; //ReportId
 	pMsgCEmi[i++] = 0x13; //PacketInfo
-	pMsgCEmi[i++] = 0x13; //Datalength  // TODO: fix with payload data +1
+	pMsgCEmi[i++] = u8MsgLDataLen + 3 + 8; //Datalength: number of octets of the data field (KNX HID Report Body)
 	// KNX HID Report Body
 	// KNX USB Transfer Protocol Header (only in start packet!)
 	pMsgCEmi[i++] = 0x00; //ProtocolVersion
 	pMsgCEmi[i++] = 0x08; //HeaderLength
-	pMsgCEmi[i++] = 0x00; //BodyLength
-	pMsgCEmi[i++] = 0x0b; //    "       // TODO: fix with payload data +1
+	pMsgCEmi[i++] = 0x00;                 //BodyLength: number of octets of the KNX USB Transfer Protocol Body
+	pMsgCEmi[i++] = u8MsgLDataLen + 3;    //     "
 	pMsgCEmi[i++] = 0x01; //ProtocolId
 	pMsgCEmi[i++] = 0x03; //EMIID (cEMI)
 	pMsgCEmi[i++] = 0x00; //ManufacturerCode
@@ -258,7 +258,10 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 	pMsgCEmi[i++] = pMsgLData[5]&0x0F;
 	pMsgCEmi[i++] = pMsgLData[6];
 	pMsgCEmi[i++] = pMsgLData[7];
-	// TODO: copy the rest of data byte!
+	// copy the rest of data byte
+	for (int j=0; j<(u8MsgLDataLen-7); j++) {
+		pMsgCEmi[i+j] = pMsgLData[7+1+j];
+	}
 	return i;
 }
 
