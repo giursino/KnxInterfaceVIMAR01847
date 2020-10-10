@@ -38,7 +38,7 @@ make install
 ## Usage
 
 ### KNX bus monitor
-Run `01847-test` program to show the knx bus messages. 
+Run `01847-busmonitor` program to show the knx bus messages. 
 This program permits also to send messages on the bus.
 
 Commands:
@@ -46,7 +46,7 @@ Commands:
 - `s` key to send message in raw format (hex)
 
 ### KNX bus monitor (nolib)
-Run `01847-test-nolib` program to show the knx bus messages.
+Run `01847-busmonitor-nolib` program to show the knx bus messages.
 This program does not use the `libknxusb` library.
 
 ### KNX send message
