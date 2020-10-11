@@ -42,7 +42,8 @@ ACLOCAL_AMFLAGS=-I ../m4
 01847_busmonitor_LDADD = \
 	$(top_builddir)/libknxusb/libknxusb.la \
 	$(PTHREAD_LIBS) \
-	$(CURSES_LIBS)
+	$(CURSES_LIBS) \
+	$(CURSES_LIB)
 
 # Linker options
 01847_busmonitor_LDFLAGS = \
@@ -52,6 +53,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 01847_busmonitor_CPPFLAGS = \
 	-I$(top_srcdir)/include \
 	$(PTHREAD_CFLAGS) \
+	$(CURSES_CFLAGS) \
 	$(CURSES_CPPFLAGS)
 
 
