@@ -46,3 +46,4 @@ example/01847-busmonitor-nolib
 example/01847-sendmsg-nolib
 *.swp
 *.swo
+.pydevproject
