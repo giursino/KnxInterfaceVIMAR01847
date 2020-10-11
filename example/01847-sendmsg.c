@@ -144,7 +144,7 @@ int main(int argc, char* argv[]) {
 
 
 	// Init Lib Knx Usb
-	res = LKU_Init(&pDevice);
+	res = LKU_Init(&pDevice, LKU_MODE_NORMAL);
 	if (res < 0) {
 		fprintf(stderr, "ERROR: cannot init library LKU.\n");
 		exit(1);

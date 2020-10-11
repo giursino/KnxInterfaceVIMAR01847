@@ -279,9 +279,9 @@ int main(int argc, char* argv[]) {
 	RefreshAll();
 
 	// Init Lib Knx Usb
-	res = LKU_Init(&pDevice);
+	res = LKU_Init(&pDevice, LKU_MODE_NORMAL);
 	if (res < 0) {
-		perror("LKU_Init");
+		perror("LKU_Init error");
 		exit(1);
 	}
 	LogPrint("LKU_Init", "file descriptor: %p.", pDevice);
@@ -336,7 +336,7 @@ int main(int argc, char* argv[]) {
 
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
-		perror("LKU_Deinit");
+		perror("LKU_Deinit error");
 		exit(1);
 	}
 

@@ -33,6 +33,17 @@
 
 
 //-START------------------------------ Types ---------------------------------//
+struct LKU_INSTANCE_;
+typedef struct LKU_INSTANCE_ LKU_INSTANCE; /**< opaque LKU structure */
+
+///Driver mode
+typedef enum {
+	LKU_MODE_NORMAL,
+	LKU_MODE_BUSMONITOR,
+
+	LKU_NODE_MAX,
+} LKU_MODE;
+
 ///KNX DPT size
 typedef enum {
 	LKU_DPT_6BIT,
@@ -73,12 +84,13 @@ typedef union {
 //-END------------------------------ Variables -------------------------------//
 
 //-START----------------------- Functions Declaration ------------------------//
-GLOBAL int LKU_Init(hid_device** pDevice);
+GLOBAL int LKU_Init(hid_device** pDevice, LKU_MODE mode);
 GLOBAL int LKU_Deinit(hid_device* pDevice);
 GLOBAL int LKU_SendRawMessage(hid_device* pDevice, const uint8_t* pMsg, uint8_t u8MsgLen);
 GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
 		LKU_DPT_TYPE dpt, const uint8_t* payload, uint8_t len);
 GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
+GLOBAL void LKU_ClearBuffer(hid_device* pDevice);
 
 //-END------------------------- Functions Declaration ------------------------//
 

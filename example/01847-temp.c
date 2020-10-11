@@ -198,7 +198,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
 
 		// Ta zona giorno
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x72)) {
+		if ((rxbuf[3]==0x21) && (rxbuf[4]==0x77)) {
 			sprintf(txbuf.track, "Ta_giorno");
 			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
 			fprintf(stdout, "*** Zona giorno, Ta=%.1f ***\n", txbuf.value);
@@ -278,6 +278,21 @@ LOCAL void SignalHandler(int signo) {
 
 }
 
+/// Signal handler, to exit from main loop
+LOCAL void SignalHandlerBeforeConnection(int signo) {
+	switch  (signo) {
+		case SIGINT:
+		case SIGTERM:
+			printf("Catched signal %i before client connection.\n", signo);
+			unlink(socket_path);
+			printf("Done.\n");
+			exit(0);
+		default:
+			break;
+	}
+
+}
+
 /// Main function
 ///
 int main(int argc, char* argv[]) {
@@ -290,9 +305,9 @@ int main(int argc, char* argv[]) {
 
 
 	// Init Lib Knx Usb
-	res = LKU_Init(&pDevice);
+	res = LKU_Init(&pDevice, LKU_MODE_BUSMONITOR);
 	if (res < 0) {
-		perror("LKU_Init");
+		perror("LKU_Init error");
 		exit(1);
 	}
 
@@ -326,6 +341,17 @@ int main(int argc, char* argv[]) {
 	}
 	if (bind(fd, (struct sockaddr*) &addr, sizeof(addr)) == -1) {
 		perror("Bind error");
+		exit(1);
+	}
+
+
+	// Register signal handler
+	if (signal(SIGINT, SignalHandlerBeforeConnection) == SIG_ERR) {
+		perror("Cannot catch SIGINT");
+		exit(1);
+	}
+	if (signal(SIGTERM, SignalHandlerBeforeConnection) == SIG_ERR) {
+		perror("Cannot catch SIGTERM");
 		exit(1);
 	}
 
@@ -459,12 +485,11 @@ int main(int argc, char* argv[]) {
 	close(cl);
 	close(fd);
 	unlink(socket_path);
-	// TODO remove file
 
 	// Deinit Lib Knx Usb
 	res = LKU_Deinit(pDevice);
 	if (res < 0) {
-		perror("LKU_Deinit");
+		perror("LKU_Deinit error");
 		exit(1);
 	}
 

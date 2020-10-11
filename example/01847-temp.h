@@ -18,7 +18,7 @@
 #endif
 #define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
 
-#define SOCKET_FILE		"/tmp/01847-temp"
+#define SOCKET_FILE		"/tmp/01847-temp.socket"
 
 //#define CONNECTIONLESS
 #define CONNECTION_ORIENTED

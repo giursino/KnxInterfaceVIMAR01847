@@ -24,6 +24,7 @@
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdint.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -46,6 +47,11 @@
 #endif
 #define GLOBAL
 
+struct LKU_INSTANCE_ {
+	bool is_loaded;
+	LKU_COMM_MODE communication_mode;
+};
+
 //-END----------------------------- Definitions ------------------------------//
 
 
@@ -55,16 +61,45 @@ LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 		uint8_t* pMsgLData, uint8_t u8MsgLDataLen);
 LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
+LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode);
 //-END------------------------- Functions Declaration ------------------------//
 
 
 //-START------------------------------ Const ---------------------------------//
+/// cEMI message to get the communication mode
+LOCAL const uint8_t LKU_msg_comm_mode_get[] = {
+	0x01, 0x13, 0x0F, 0x00, 0x08, 0x00, 0x07, 0x01, 0x03, 0x00, 0x00,
+	LKU_CEMI_M_PropRead_req,
+	0x00, 0x08, 0x01, 0x34, 0x10, 0x01
+};
+/// cEMI message for communication mode: Data Link Layer
+LOCAL const uint8_t LKU_msg_comm_mode_LL[] = {
+	0x01, 0x13, 0x10, 0x00, 0x08, 0x00, 0x08, 0x01, 0x03, 0x00, 0x00,
+	LKU_CEMI_M_PropWrite_req,
+	0x00, 0x08, 0x01, 0x34, 0x10, 0x01, 0x00
+};
+/// cEMI message for communication mode: Data Link Layer Busmonitor
+LOCAL const uint8_t LKU_msg_comm_mode_LLB[] = {
+	0x01, 0x13, 0x10, 0x00, 0x08, 0x00, 0x08, 0x01, 0x03, 0x00, 0x00,
+	LKU_CEMI_M_PropWrite_req,
+	0x00, 0x08, 0x01, 0x34, 0x10, 0x01, 0x01
+};
+/// cEMI message for communication mode: Data Link Layer Raw Frames
+LOCAL const uint8_t LKU_msg_comm_mode_LLR[] = {
+	0x01, 0x13, 0x10, 0x00, 0x08, 0x00, 0x08, 0x01, 0x03, 0x00, 0x00,
+	LKU_CEMI_M_PropWrite_req,
+	0x00, 0x08, 0x01, 0x34, 0x10, 0x01, 0x02
+};
 //-END-------------------------------- Const ---------------------------------//
 
 
 //-START----------------------------- Variables ------------------------------//
 //-PUBLIC-
 //-PRIVATE-
+LOCAL LKU_INSTANCE LKU_Instance = {
+		.is_loaded = false,
+		.communication_mode = LKU_COMM_MODE_LL
+};
 //-END------------------------------ Variables -------------------------------//
 
 
@@ -79,7 +114,12 @@ LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8L
 /// @param 	pDevice return pointer to device handler created by library
 /// @return	0 on success and -1 on error
 ///
-GLOBAL int LKU_Init(hid_device** pDevice) {
+GLOBAL int LKU_Init(hid_device** pDevice, LKU_MODE mode) {
+
+	if (LKU_Instance.is_loaded) {
+		return -1;
+	}
+
 	int res;
 	res = hid_init();
 	if (res < 0) {
@@ -98,6 +138,18 @@ GLOBAL int LKU_Init(hid_device** pDevice) {
 		// cannot open the device
 		return -1;
 	}
+
+	LKU_ClearBuffer(*pDevice);
+
+	if (mode == LKU_MODE_BUSMONITOR) {
+		LKU_Instance.communication_mode = LKU_COMM_MODE_LLB;
+	}
+
+	res = CommunicationMode(*pDevice, LKU_Instance.communication_mode);
+	if (res < 0) {
+		fprintf(stderr, "Cannot set the communication mode.\n");
+		return -1;
+	}
 	return 0;
 }
 
@@ -113,6 +165,7 @@ GLOBAL int LKU_Deinit(hid_device* pDevice) {
 	if (res < 0) {
 		return -1;
 	}
+	LKU_Instance.is_loaded = false;
 	return 0;
 }
 
@@ -324,6 +377,78 @@ LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8L
 		printf("%.2X ", pMsg[i]);
 	}
 	printf(".\n");
+}
+
+LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode) {
+
+	const uint8_t* p_msg;
+	uint8_t msg_len;
+	uint8_t buf[LKU_CEMI_MSG_LENGTH];
+	int res;
+
+	switch (mode) {
+		case LKU_COMM_MODE_LL:
+			p_msg = LKU_msg_comm_mode_LL;
+			msg_len = sizeof(LKU_msg_comm_mode_LL);
+			break;
+		case LKU_COMM_MODE_LLB:
+			p_msg = LKU_msg_comm_mode_LLB;
+			msg_len = sizeof(LKU_msg_comm_mode_LLB);
+			break;
+		case LKU_COMM_MODE_LLR:
+			p_msg = LKU_msg_comm_mode_LLR;
+			msg_len = sizeof(LKU_msg_comm_mode_LLR);
+			break;
+		default:
+			return -1;
+			break;
+	}
+
+	// Setting communication mode..."
+	res = hid_write(pDevice, p_msg, msg_len);
+
+	// Waiting response...
+	res = hid_read_timeout(pDevice, buf, LKU_CEMI_MSG_LENGTH, LKU_CEMI_RESP_TIMEOUT);
+
+	#ifdef DEBUG
+	for (int i = 0; i < res; i++) {printf("%.2hhx ", buf[i]); if (i==(res-1)) { printf("\n");};}
+	#endif
+
+	if (!(	(res == LKU_CEMI_MSG_LENGTH) &&
+			(buf[LKU_CEMI_M_CODE_POS] == LKU_CEMI_M_PropWrite_con)))
+	{
+		fprintf(stderr, "Invalid response from device\n");
+		return -1;
+	}
+
+	// Getting communication mode...
+	res = hid_write(pDevice, LKU_msg_comm_mode_get, sizeof(LKU_msg_comm_mode_get));
+
+	// Waiting response...
+	res = hid_read_timeout(pDevice, buf, LKU_CEMI_MSG_LENGTH, LKU_CEMI_RESP_TIMEOUT);
+
+	#ifdef DEBUG
+	for (int i = 0; i < res; i++) {printf("%.2hhx ", buf[i]); if (i==(res-1)) { printf("\n");};}
+	#endif
+
+	if (!(	(res == LKU_CEMI_MSG_LENGTH) &&
+			(buf[LKU_CEMI_M_CODE_POS] == LKU_CEMI_M_PropRead_con) &&
+			(buf[LKU_CEMI_PROP_DATA_POS] == mode)))
+	{
+		fprintf(stderr, "Invalid communication mode set on device\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+GLOBAL void LKU_ClearBuffer(hid_device* pDevice) {
+	uint8_t buf[LKU_CEMI_MSG_LENGTH];
+	int res;
+
+	do {
+		res = hid_read_timeout(pDevice, buf, LKU_CEMI_MSG_LENGTH, LKU_CEMI_RESP_TIMEOUT);
+	} while (res > 0);
 }
 //-END----------------------------- Functions --------------------------------//
 

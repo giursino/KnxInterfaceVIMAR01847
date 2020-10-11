@@ -32,6 +32,21 @@
 /// Max length of cEmi message
 #define LKU_CEMI_MSG_LENGTH		64
 
+/// cEMI timeout [ms]
+#define LKU_CEMI_RESP_TIMEOUT	1000
+
+/// cEMI msg field
+/// @{
+#define LKU_CEMI_M_CODE_POS      11
+#define LKU_CEMI_PROP_DATA_POS   18
+
+#define LKU_CEMI_M_PropRead_req  0xFC
+#define LKU_CEMI_M_PropRead_con  0xFB
+
+#define LKU_CEMI_M_PropWrite_req 0xF6
+#define LKU_CEMI_M_PropWrite_con 0xF5
+/// @}
+
 /// KNX msg field
 /// @{
 #define LKU_KNX_MSG_CTRLFIELD	0
@@ -74,6 +89,11 @@
 
 
 //-START------------------------------ Types ---------------------------------//
+typedef enum {
+	LKU_COMM_MODE_LL = 0x00,
+	LKU_COMM_MODE_LLB = 0x01,
+	LKU_COMM_MODE_LLR = 0x02,
+} LKU_COMM_MODE;
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//
