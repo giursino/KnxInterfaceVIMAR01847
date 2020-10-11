@@ -129,7 +129,7 @@ print >>sys.stderr, 'Opening socket...'
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
 # Connect the socket to the port where the server is listening
-server_address = '/tmp/01847-temp'
+server_address = '/tmp/01847-temp.socket'
 print >>sys.stderr, 'connecting to %s' % server_address
 try:
     sock.connect(server_address)
