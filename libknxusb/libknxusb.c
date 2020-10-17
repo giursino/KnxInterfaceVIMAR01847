@@ -351,10 +351,20 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	checkCEmiByte(pMsgCEmi[i++], 0x00); //ManufacturerCode
 	checkCEmiByte(pMsgCEmi[i++], 0x00); //    "
 	// KNX USB Transfer Protocol Body
-	//checkCEmiByte(pMsgCEmi[i++], 0x29); //EMIMessageCode (29=rx, 11=tx)
+	// TODO: ristrutturare libreria in modo che faccia la decodifica del messaggio cEMI corretto
+	// EMIMessageCode:
+	//   0x2B = L_Busmon.ind
+	//   0x11 = L_Data.req
+	//   0x29 = L_Data.ind
+	//   0x2E = L_Data.con
+	//   0x10 = L_Raw.req
+	//   0x2D = L_Raw.ind
+	//   0x2F = L_Raw.con
 	i++;
 	// Data
-	checkCEmiByte(pMsgCEmi[i++], 0x00);
+	//checkCEmiByte(pMsgCEmi[i++], 0x00);
+	// TODO: decodifica messaggio applicativo KNX, in base al EMIMessageCode
+	i++;
 	sdata = i;
 
 	// Creating LDATA msg
@@ -362,6 +372,7 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	pMsgLData[1] = pMsgCEmi[sdata+2]; // Src address
 	pMsgLData[2] = pMsgCEmi[sdata+3]; //     "
 	pMsgLData[3] = pMsgCEmi[sdata+4]; // Dst address
+
 	pMsgLData[4] = pMsgCEmi[sdata+5]; //     "
 	pMsgLData[5] = (pMsgCEmi[sdata+6]&0x0F) | (pMsgCEmi[sdata+1]&0xF0); // Len + Network
 	for (i=0; i<mlen-6; i++) {
@@ -405,14 +416,12 @@ LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode) {
 	}
 
 	// Setting communication mode..."
+	DebugPrintMsg("-> ", p_msg, msg_len);
 	res = hid_write(pDevice, p_msg, msg_len);
 
 	// Waiting response...
 	res = hid_read_timeout(pDevice, buf, LKU_CEMI_MSG_LENGTH, LKU_CEMI_RESP_TIMEOUT);
-
-	#ifdef DEBUG
-	for (int i = 0; i < res; i++) {printf("%.2hhx ", buf[i]); if (i==(res-1)) { printf("\n");};}
-	#endif
+	DebugPrintMsg("<- ", buf, res);
 
 	if (!(	(res == LKU_CEMI_MSG_LENGTH) &&
 			(buf[LKU_CEMI_M_CODE_POS] == LKU_CEMI_M_PropWrite_con)))
@@ -422,14 +431,12 @@ LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode) {
 	}
 
 	// Getting communication mode...
+	DebugPrintMsg("-> ", p_msg, msg_len);
 	res = hid_write(pDevice, LKU_msg_comm_mode_get, sizeof(LKU_msg_comm_mode_get));
 
 	// Waiting response...
 	res = hid_read_timeout(pDevice, buf, LKU_CEMI_MSG_LENGTH, LKU_CEMI_RESP_TIMEOUT);
-
-	#ifdef DEBUG
-	for (int i = 0; i < res; i++) {printf("%.2hhx ", buf[i]); if (i==(res-1)) { printf("\n");};}
-	#endif
+	DebugPrintMsg("<- ", buf, res);
 
 	if (!(	(res == LKU_CEMI_MSG_LENGTH) &&
 			(buf[LKU_CEMI_M_CODE_POS] == LKU_CEMI_M_PropRead_con) &&
