@@ -1,26 +1,8 @@
 //******************************************************************************
 /// @file libknxusb.c
-/// @brief Libreria per interfacciarsi al bus KNX tramite USB
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnotelibknxusb
+/// @brief Library to interface to KNX bus with KNX USB interface
 //******************************************************************************
 
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnotelibknxusb Revision History del modulo libknxusb
-*@section revnotelibknxusb_rev0 giursino 23:40:27 23 mar 2017
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdint.h>
@@ -35,6 +17,8 @@
 #include "config.h"
 #include "libknxusb.h"
 #include "libknxusb_priv.h"
+#include "knxhid.h"
+#include "cemi.h"
 
 #ifdef LOCAL
 	#undef LOCAL

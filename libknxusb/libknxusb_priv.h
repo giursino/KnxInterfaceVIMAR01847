@@ -1,19 +1,7 @@
 //******************************************************************************
 /// @file libknxusb_priv.h
-/// @brief Header file del modulo libknxusb
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-///
+/// @brief Private header file of libknxusb
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
 
 #ifndef LIBKNXUSB_PRIV_H_
 #define LIBKNXUSB_PRIV_H_
@@ -23,11 +11,11 @@
 #ifdef LOCAL
 	#undef LOCAL
 #endif
-#define LOCAL static			///< Identifica tutti gli oggetti a carattere locale
+#define LOCAL static
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
+#define GLOBAL extern
 
 /// Max length of cEmi message
 #define LKU_CEMI_MSG_LENGTH		64
