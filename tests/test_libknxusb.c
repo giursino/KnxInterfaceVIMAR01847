@@ -127,10 +127,29 @@ static void test_LKU_CEmi2LData(void **state) {
 /* Test of LKU_Decode */
 static void test_LKU_Decode(void **state) {
 
-	KNXHID_Frame buf;
-	buf.KNX_HID_Report.KNX_HID_Report_Header.ReportID = 0x00;
-	buf.KNX_HID_Report.KNX_HID_Report_Header.PacketInfo.sequence_number = 1;
-	buf.KNX_HID_Report.KNX_HID_Report_Header.PacketInfo.packet_type = 3;
+	KNXHID_Frame buf = {
+			// KNX HID Report Header
+			0x01, //ReportId
+			0x13, //PacketInfo
+			0x13, //Datalength
+
+			// KNX HID Report Body
+			0x00, //ProtocolVersion
+			0x08, //HeaderLength
+			0x00, //BodyLength
+			0x0B, //    "
+			0x01, //ProtocolId
+			0x03, //EMIID (cEMI)
+			0x00, //ManufacturerCode
+			0x00, //      "
+
+			// KNX USB Transfer Protocol Body
+			0x29, //EMIMessageCode (29=rx, 11=tx)
+			0x00, //Data
+
+			0xBC, 0xE0, 0x10, 0x01, 0x0C, 0x0A, 0x01, 0x00, 0x81,
+	};
+
 
 	uint8_t retbuf[LKU_KNX_MSG_LENGTH];
 
