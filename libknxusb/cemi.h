@@ -31,8 +31,8 @@ typedef enum {
 	CEMI_MC_MAX
 } CEMI_MC_TYPE;
 
-
-typedef union __attribute__((__packed__)) {
+#pragma pack(1)
+typedef union {
 	struct {
 		uint8_t AdditionalInfoLength;
 		uint8_t ControlField1;
@@ -46,7 +46,7 @@ typedef union __attribute__((__packed__)) {
 	u_int8_t byte[52];
 } CEMI_L_Data;
 
-typedef union __attribute__((__packed__)) {
+typedef union {
 	struct {
 		uint8_t AdditionalInfoLength;
 		uint8_t Data[51];
@@ -55,7 +55,7 @@ typedef union __attribute__((__packed__)) {
 	u_int8_t byte[52];
 } CEMI_L_Busmon;
 
-typedef union __attribute__((__packed__)) {
+typedef union {
 	struct {
 		uint8_t MessageCode;
 		uint8_t Data[52];
@@ -63,6 +63,7 @@ typedef union __attribute__((__packed__)) {
 
 	u_int8_t byte[53];
 } CEMI_Frame;
+#pragma pack()
 
 //-END-------------------------------- Types ---------------------------------//
 

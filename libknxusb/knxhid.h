@@ -21,14 +21,15 @@
 
 //-START------------------------------ Types ---------------------------------//
 typedef enum {
-	EMI_ID_EMI1,
-	EMI_ID_EMI2,
-	EMI_ID_cEMI,
+	EMI_ID_EMI1 = 0x01,
+	EMI_ID_EMI2 = 0x02,
+	EMI_ID_cEMI = 0x03,
 
 	EMI_ID_MAX,
 } EMI_ID_TYPE;
 
-typedef union __attribute__((__packed__)) {
+#pragma pack(1)
+typedef union {
 
 	struct {
 
@@ -63,6 +64,7 @@ typedef union __attribute__((__packed__)) {
 
 	u_int8_t byte[64];
 } KNXHID_Frame;
+#pragma pack()
 //-END-------------------------------- Types ---------------------------------//
 
 //-START------------------------------ Macro ---------------------------------//
