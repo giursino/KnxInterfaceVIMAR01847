@@ -12,6 +12,8 @@ lib_LTLIBRARIES = libknxusb.la
 # All file are included in the distro
 libknxusb_la_SOURCES = \
 	libknxusb.c \
+	knxhid.c \
+	cemi.c \
 	libknxusb_priv.h 
  
 
