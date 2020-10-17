@@ -48,10 +48,10 @@
 GLOBAL int KNXHID_Decode(
 		const KNXHID_Frame* knx_hid_frame,
 		EMI_ID_TYPE* emi_type,
-		uint8_t* emi_data)
+		uint8_t** emi_data)
 {
 	*emi_type = knx_hid_frame->KNX_HID_Report.KNX_HID_Report_Body.KNX_USB_Transfer_Protocol_Header.EMI_ID;
-	emi_data = &knx_hid_frame->KNX_HID_Report.KNX_HID_Report_Body.KNX_USB_Transfer_Protocol_Body;
+	*emi_data = &knx_hid_frame->KNX_HID_Report.KNX_HID_Report_Body.KNX_USB_Transfer_Protocol_Body;
 	return knx_hid_frame->KNX_HID_Report.KNX_HID_Report_Body.KNX_USB_Transfer_Protocol_Header.BodyLength;
 }
 //-END----------------------------- Functions --------------------------------//

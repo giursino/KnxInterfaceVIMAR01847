@@ -80,7 +80,7 @@ typedef union {
 GLOBAL int KNXHID_Decode(
 		const KNXHID_Frame* knx_hid_frame,
 		EMI_ID_TYPE* emi_type,
-		uint8_t* emi_data);
+		uint8_t** emi_data);
 //-END------------------------- Functions Declaration ------------------------//
 
 #endif

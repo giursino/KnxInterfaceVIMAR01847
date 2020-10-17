@@ -293,7 +293,7 @@ LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_typ
 
 	EMI_ID_TYPE emi_type;
 	uint8_t* emi_data;
-	res = KNXHID_Decode(knx_hid_frame, &emi_type, emi_data);
+	res = KNXHID_Decode(knx_hid_frame, &emi_type, &emi_data);
 	if (res < 0) {
 		fprintf(stderr, "Error on decoding KNX HID message\n");
 		return -1;
