@@ -28,8 +28,8 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per leggere e scrivere messagi su bus,
-# usa grafica ncurses e la libreria per accedere all'interfaccia 01847
+# Example application for VIMAR 01847 KNX interface.
+# It uses ncurse to manage the graphics.
 # ------------------------------------------
 # Sources
 01847_busmonitor_SOURCES= \
@@ -59,7 +59,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per inviare messaggi da riga di comando
+# Application to send knx message from command line using 01847 interface
 # ------------------------------------------
 01847_sendmsg_SOURCES= \
 	01847-sendmsg.c
@@ -77,7 +77,9 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per leggere i messagi su bus, non usa né grafica né la libreria
+# Example application to test the KNX Interface VIMAR 01847
+# It do not use libknxusb
+# It only uses libhid
 # ------------------------------------------
 01847_busmonitor_nolib_SOURCES= \
 	01847-busmonitor-nolib.c
@@ -85,7 +87,8 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per inviare messaggi da riga di comando che non usa la libreria
+# Example application to send a message with KNX Interface VIMAR 01847
+# It does not use libknxusb, it only use libhid
 # ------------------------------------------
 01847_sendmsg_nolib_SOURCES= \
 	01847-sendmsg-nolib.c
@@ -93,7 +96,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Programma di esempio per il monitoraggio della temperatura
+# Example application to monitor temperature using KNX Interface VIMAR 01847
 # ------------------------------------------
 01847_temp_SOURCES = \
 	01847-temp.c \
@@ -115,7 +118,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Test del programma di esempio per il monitoraggio della temperatura
+# Example application to test 01847-temp application
 # ------------------------------------------
 01847_temp_reader_SOURCES = \
 	01847-temp-reader.c
@@ -123,7 +126,7 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Test dell'hw KNX Tiny Serial 810
+# Example application to connect to KNX Tiny Serial 810 hardware
 # ------------------------------------------
 KNXTinySerial_test_SOURCES = \
 	KNXTinySerial-test.c
@@ -131,7 +134,8 @@ KNXTinySerial_test_SOURCES = \
 
 
 # ------------------------------------------
-# Test della libreria libknx810
+# Example application to connect to KNX Tiny Serial 810 hardware
+# using the library libknx810
 # ------------------------------------------
 KNXTinySerial_libtest_SOURCES = \
 	KNXTinySerial-libtest.c

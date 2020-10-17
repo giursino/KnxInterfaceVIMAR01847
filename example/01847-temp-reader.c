@@ -1,26 +1,7 @@
 //******************************************************************************
 /// @file 01847-temp-reader.c
-/// @brief Applicativo di test per l'articolo 01847
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnote01847-test
+/// @brief Test application for connection to 01847-temp application
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnote01847-test Revision History del modulo 01847-test
-*@section revnote01847-test_rev0 giursino 23:40:27 23 mar 2017
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <math.h>

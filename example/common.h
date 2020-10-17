@@ -1,18 +1,10 @@
-
 //******************************************************************************
 /// @file 	common.h
-/// @brief 	Header file del progetto
+/// @brief 	Header file of common.c
 /// $Author: Giuseppe Ursino $
 /// $Date: 2010-11-09 10:04:16 +0000 (mar, 09 nov 2010) $
 /// $Revision: 43 $
 //******************************************************************************
-
-//
-// -----
-// $Id: common.h 43 2010-11-09 10:04:16Z Giuseppe Ursino $
-// -----
-//
-
 
 #ifndef __COMMON_H__
 	#define __COMMON_H__
@@ -22,13 +14,11 @@
 #ifdef LOCAL
 	#undef LOCAL
 #endif
-#define LOCAL static	///< funzioni o variabili invocate solo all'interno del modulo
+#define LOCAL static
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL extern	///< funzioni o variabili rese disponibili ad altri moduli
-
-//#define WIN32_OS		///< compilazione per win32
+#define GLOBAL extern
 
 #define TRUE					1			///< Valore TRUE boolean
 #define FALSE					0			///< Valore FALSE boolean

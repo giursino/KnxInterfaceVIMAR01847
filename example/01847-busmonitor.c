@@ -1,10 +1,6 @@
 //******************************************************************************
 /// @file 01847-busmonitor.c
 /// @brief Example application for VIMAR 01847 KNX interface
-/// $Author$
-/// $Date$
-/// $Revision$
-///
 ///
 /// @note Use ncurse to manage the graphics, press:
 //        * 'q' to quit

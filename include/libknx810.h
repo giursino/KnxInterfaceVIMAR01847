@@ -1,19 +1,7 @@
 //******************************************************************************
 /// @file libknx810.h
-/// @brief Header file del modulo libknx810
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-///
+/// @brief Header file of libknx810
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
 
 #ifndef LIBKNX810_H_
 #define LIBKNX810_H_
@@ -23,11 +11,11 @@
 #ifdef LOCAL
 	#undef LOCAL
 #endif
-#define LOCAL static			///< Identifica tutti gli oggetti a carattere locale
+#define LOCAL static
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
+#define GLOBAL extern
 
 //-END----------------------------- Definitions ------------------------------//
 

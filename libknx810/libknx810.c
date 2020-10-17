@@ -1,26 +1,7 @@
 //******************************************************************************
 /// @file libknx810.c
-/// @brief Libreria per interfacciarsi al bus KNX tramite USB
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnotelibknx810
+/// @brief Library to interface to KNX bus with KNXTiny810 interface
 //******************************************************************************
-
-//
-// -----
-// $Id$
-// -----
-//
-
-
-/**
-*@page revnotelibknx810 Revision History del modulo libknx810
-*@section revnotelibknx810_rev0 giursino 23:40:27 23 mar 2017
-* - Creazione del modulo.
-*/
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdint.h>

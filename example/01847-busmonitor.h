@@ -1,12 +1,6 @@
 //******************************************************************************
-/// @file 01847-test.h
-/// @brief Header file del modulo 01847-test 
-/// $Author$
-/// $Date$
-/// $Revision$
-///
-///
-///
+/// @file 01847-busmonitor.h
+/// @brief Header file of 01847-busmonitor
 //******************************************************************************
 
 //
@@ -23,11 +17,11 @@
 #ifdef LOCAL
 	#undef LOCAL
 #endif
-#define LOCAL static			///< Identifica tutti gli oggetti a carattere locale
+#define LOCAL static
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
+#define GLOBAL extern
 
 /// Print message on log
 #define LogPrint(strprefix, ...)		{       \

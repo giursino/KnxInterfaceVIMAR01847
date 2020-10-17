@@ -19,21 +19,7 @@
 /// along with this program; if not, write to the Free Software
 /// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ///
-/// @note La storia dello sviluppo del modulo è descritta in @ref revnoteCommon
 //******************************************************************************
-
-//
-// -----
-// $Id: common.c 43 2010-11-09 10:04:16Z Giuseppe Ursino $
-// -----
-//
-
-/**
-*@page revnoteCommon Revision History del modulo common
-*@section revnoteCommon_rev0 GU 2010-09-29
-* - Creazione del file.
-*/
-
 
 //-START--------------------------- Definitions ------------------------------//
 #include <stdio.h>

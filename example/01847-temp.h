@@ -12,11 +12,11 @@
 #ifdef LOCAL
 	#undef LOCAL
 #endif
-#define LOCAL static			///< Identifica tutti gli oggetti a carattere locale
+#define LOCAL static
 #ifdef GLOBAL
 	#undef GLOBAL
 #endif
-#define GLOBAL extern			///< Identifica tutti gli oggetti a carattere globale
+#define GLOBAL extern
 
 #define SOCKET_FILE		"/tmp/01847-temp.socket"
 
