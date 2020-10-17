@@ -6,5 +6,5 @@ aclocal ${OECORE_ACLOCAL_OPTS}
 autoconf
 autoheader
 automake -a
-./configure $@
+./configure --prefix=/dbg CPPFLAGS=-DDEBUG CFLAGS="-g -O0" $@
 exit
