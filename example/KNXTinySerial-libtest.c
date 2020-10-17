@@ -1,6 +1,6 @@
 //******************************************************************************
 /// @file KNXTinySerial-libtest.c
-/// @brief Example appplication to test libknx810 library
+/// @brief Example application to test libknx810 library
 //******************************************************************************
 
 //-START--------------------------- Definitions ------------------------------//
