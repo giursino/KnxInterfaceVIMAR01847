@@ -44,6 +44,8 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 		uint8_t* pMsgLData, uint8_t u8MsgLDataLen);
 LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode);
+LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_type,
+		uint8_t* msg, uint8_t msg_len);
 //-END------------------------- Functions Declaration ------------------------//
 
 
@@ -242,11 +244,103 @@ GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8M
 		fprintf(stderr, "Error on reading raw message\n");
 		return -1;
 	}
+
+
 	res = LKU_CEmi2LData(msg, res, pMsg, u8MsgLen);
 	if (res < 0) {
 		fprintf(stderr, "Error decoding CEMI message\n");
 		return -1;
 	}
+	return res;
+}
+
+GLOBAL int LKU_ReceiveLBusmonMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len) {
+	return -1;
+}
+
+GLOBAL int LKU_ReceiveLDataMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len) {
+	int res;
+
+	do {
+		LKU_KNXMSG_TYPE msg_type;
+		res = LKU_ReceiveMessage(pDevice, &msg_type, msg, msg_len);
+
+		if (msg_type == LKU_KNXMSG_L_Data) {
+			break;
+		}
+
+	} while (res > 0);
+
+	return res;
+}
+
+GLOBAL int LKU_ReceiveMessage(hid_device* pDevice, LKU_KNXMSG_TYPE* msg_type, uint8_t* msg, uint8_t msg_len) {
+	KNXHID_Frame knx_hid_frame;
+	int res;
+
+	res = hid_read(pDevice, (uint8_t*) &knx_hid_frame, LKU_CEMI_MSG_LENGTH);
+	if (res < 0) {
+		fprintf(stderr, "Error on reading raw message\n");
+		return -1;
+	}
+
+	return LKU_Decode(&knx_hid_frame, msg_type, msg, msg_len);
+
+}
+
+LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_type, uint8_t* msg, uint8_t msg_len) {
+	int res;
+
+	EMI_ID_TYPE emi_type;
+	uint8_t* emi_data;
+	res = KNXHID_Decode(knx_hid_frame, &emi_type, emi_data);
+	if (res < 0) {
+		fprintf(stderr, "Error on decoding KNX HID message\n");
+		return -1;
+	}
+
+	switch (emi_type) {
+		case EMI_ID_cEMI:
+		{
+			CEMI_MC_TYPE cEmi_message_code;
+			uint8_t* cEmi_data;
+			CEMI_Decode((CEMI_Frame*) (emi_data), &cEmi_message_code, cEmi_data);
+
+			switch (cEmi_message_code) {
+
+				case CEMI_MC_L_Data_req:
+				case CEMI_MC_L_Data_ind:
+				case CEMI_MC_L_Data_con:
+					*msg_type = LKU_KNXMSG_L_Data;
+					msg = cEmi_data;
+					break;
+
+				case CEMI_MC_L_Busmon_ind:
+					*msg_type = LKU_KNXMSG_L_Busmon;
+					msg = cEmi_data;
+					break;
+
+				default:
+					fprintf(stderr, "cEMI message not managed\n");
+					return -1;
+					break;
+			}
+
+			break;
+		}
+
+		case EMI_ID_EMI1:
+		case EMI_ID_EMI2:
+			fprintf(stderr, "EMI type not managed\n");
+			return -1;
+			break;
+
+		default:
+			fprintf(stderr, "Invalid EMI type\n");
+			return -1;
+			break;
+	}
+
 	return res;
 }
 

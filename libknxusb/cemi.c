@@ -13,6 +13,7 @@
 #include <time.h>
 
 #include "config.h"
+#include "cemi.h"
 
 #ifdef LOCAL
 	#undef LOCAL
@@ -44,5 +45,13 @@
 
 
 //-START--------------------------- Functions --------------------------------//
+GLOBAL int CEMI_Decode(
+		const CEMI_Frame* emi_data,
+		CEMI_MC_TYPE* cEmi_message_code,
+		uint8_t* cEmi_data)
+{
+	*cEmi_message_code = (CEMI_MC_TYPE) (emi_data->cEMI.MessageCode);
+	return 0;
+}
 //-END----------------------------- Functions --------------------------------//
 
