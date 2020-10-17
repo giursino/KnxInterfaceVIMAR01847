@@ -127,7 +127,7 @@ static void test_LKU_CEmi2LData(void **state) {
 /* Test of LKU_Decode */
 static void test_LKU_Decode(void **state) {
 
-	KNXHID_Frame buf = {
+	KNXHID_Frame buf = { .byte= {
 			// KNX HID Report Header
 			0x01, //ReportId
 			0x13, //PacketInfo
@@ -148,7 +148,7 @@ static void test_LKU_Decode(void **state) {
 			0x00, //Data
 
 			0xBC, 0xE0, 0x10, 0x01, 0x0C, 0x0A, 0x01, 0x00, 0x81,
-	};
+	}};
 
 
 	uint8_t retbuf[LKU_KNX_MSG_LENGTH];
