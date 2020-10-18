@@ -255,7 +255,19 @@ GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8M
 }
 
 GLOBAL int LKU_ReceiveLBusmonMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len) {
-	return -1;
+	int res;
+
+	do {
+		LKU_KNXMSG_TYPE msg_type;
+		res = LKU_ReceiveMessage(pDevice, &msg_type, msg, msg_len);
+
+		if (msg_type == LKU_KNXMSG_L_Busmon) {
+			break;
+		}
+
+	} while (res > 0);
+
+	return res;
 }
 
 GLOBAL int LKU_ReceiveLDataMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len) {

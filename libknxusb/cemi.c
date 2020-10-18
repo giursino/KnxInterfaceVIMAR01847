@@ -78,7 +78,17 @@ GLOBAL int CEMI_L_Busmon_Get(
 		uint8_t* out,
 		uint8_t out_len)
 {
-	return -1;
+	CEMI_L_Busmon* data = (CEMI_L_Busmon*)(&in->cEMI.Data);
+
+	if (data->L_Busmon.AdditionalInfoLength != 0x00) {
+		fprintf(stderr, "L_Busmon message not managed\n");
+		return -1;
+	}
+
+	uint8_t len = in_len - (offsetof(CEMI_L_Busmon, L_Busmon.Data));
+	memcpy(&out[0], &data->L_Busmon.Data, len);
+
+	return len;
 }
 //-END----------------------------- Functions --------------------------------//
 
