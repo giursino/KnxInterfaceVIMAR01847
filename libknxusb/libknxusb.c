@@ -303,8 +303,8 @@ LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_typ
 		case EMI_ID_cEMI:
 		{
 			CEMI_MC_TYPE cEmi_message_code;
-			uint8_t* cEmi_data;
-			CEMI_Decode((CEMI_Frame*) (emi_data), &cEmi_message_code, cEmi_data);
+			uint8_t* cemi_data;
+			CEMI_Decode((CEMI_Frame*) (emi_data), &cEmi_message_code, cemi_data);
 
 			switch (cEmi_message_code) {
 
@@ -312,12 +312,15 @@ LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_typ
 				case CEMI_MC_L_Data_ind:
 				case CEMI_MC_L_Data_con:
 					*msg_type = LKU_KNXMSG_L_Data;
-					msg = cEmi_data;
+					uint8_t* L_Data;
+					uint8_t L_Data_len = res;
+					// TODO: memcpy to msg
+					CEMI_L_Data_Decode((CEMI_L_Data*) (emi_data), msg);
 					break;
 
 				case CEMI_MC_L_Busmon_ind:
 					*msg_type = LKU_KNXMSG_L_Busmon;
-					msg = cEmi_data;
+					msg = cemi_data;
 					break;
 
 				default:

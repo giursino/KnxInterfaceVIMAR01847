@@ -159,6 +159,7 @@ static void test_LKU_Decode(void **state) {
 
 	assert_int_not_equal(ret, -1);
 	assert_int_equal(ret, 8);
+	assert_int_equal(rettype, LKU_KNXMSG_L_Data);
 
 	uint8_t i;
 	assert_int_equal(retbuf[i++], 0xBC);

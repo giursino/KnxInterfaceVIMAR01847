@@ -28,6 +28,13 @@ typedef enum {
 	EMI_ID_MAX,
 } EMI_ID_TYPE;
 
+typedef enum {
+	PROTOCOL_ID_KNX_TUNNEL = 0x01,
+	PROTOCOL_ID_M_BUS_TUNNEL = 0x02,
+	PROTOCOL_ID_BATI_BUS_TUNNEL = 0x03,
+	PROTOCOL_ID_BUS_ACCESS_SERVER_FEATURE_SERVICE = 0x0F,
+} PROTOCOL_ID_TYPE;
+
 #pragma pack(1)
 typedef union {
 
@@ -36,8 +43,8 @@ typedef union {
 		struct {
 			u_int8_t ReportID;
 			struct {
-				u_int8_t sequence_number:4;
 				u_int8_t packet_type:4;
+				u_int8_t sequence_number:4;
 			} PacketInfo;
 			u_int8_t Datalength;
 		} KNX_HID_Report_Header;
