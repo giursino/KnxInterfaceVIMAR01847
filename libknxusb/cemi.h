@@ -77,10 +77,19 @@ typedef union {
 //-END------------------------------ Variables -------------------------------//
 
 //-START----------------------- Functions Declaration ------------------------//
-GLOBAL int CEMI_Decode(
-		const CEMI_Frame* emi_data,
-		CEMI_MC_TYPE* cEmi_message_code,
-		uint8_t* cEmi_data);
+GLOBAL CEMI_MC_TYPE CEMI_GetMessageCode(CEMI_Frame* frame);
+
+GLOBAL int CEMI_L_Data_Get(
+		const CEMI_Frame* in,
+		uint8_t in_len,
+		uint8_t* out,
+		uint8_t out_len);
+
+GLOBAL int CEMI_L_Busmon_Get(
+		const CEMI_Frame* in,
+		uint8_t in_len,
+		uint8_t* out,
+		uint8_t out_len);
 //-END------------------------- Functions Declaration ------------------------//
 
 #endif

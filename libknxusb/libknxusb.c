@@ -293,34 +293,39 @@ LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_typ
 
 	EMI_ID_TYPE emi_type;
 	uint8_t* emi_data;
+	uint8_t emi_data_len;
 	res = KNXHID_Decode(knx_hid_frame, &emi_type, &emi_data);
 	if (res < 0) {
 		fprintf(stderr, "Error on decoding KNX HID message\n");
 		return -1;
 	}
+	emi_data_len = res;
 
 	switch (emi_type) {
 		case EMI_ID_cEMI:
 		{
-			CEMI_MC_TYPE cEmi_message_code;
-			uint8_t* cemi_data;
-			CEMI_Decode((CEMI_Frame*) (emi_data), &cEmi_message_code, cemi_data);
+			CEMI_MC_TYPE cEMI_message_code = CEMI_GetMessageCode((CEMI_Frame*) (emi_data));
 
-			switch (cEmi_message_code) {
+			switch (cEMI_message_code) {
 
 				case CEMI_MC_L_Data_req:
 				case CEMI_MC_L_Data_ind:
 				case CEMI_MC_L_Data_con:
 					*msg_type = LKU_KNXMSG_L_Data;
-					uint8_t* L_Data;
-					uint8_t L_Data_len = res;
-					// TODO: memcpy to msg
-					CEMI_L_Data_Decode((CEMI_L_Data*) (emi_data), msg);
+					res = CEMI_L_Data_Get((CEMI_Frame*) (emi_data), emi_data_len, msg, msg_len);
+					if (res < 0) {
+						fprintf(stderr, "Error on converting cEMI L_Data message\n");
+						return -1;
+					}
 					break;
 
 				case CEMI_MC_L_Busmon_ind:
 					*msg_type = LKU_KNXMSG_L_Busmon;
-					msg = cemi_data;
+					res = CEMI_L_Busmon_Get((CEMI_Frame*) (emi_data), emi_data_len, msg, msg_len);
+					if (res < 0) {
+						fprintf(stderr, "Error on converting cEMI L_Busmon message\n");
+						return -1;
+					}
 					break;
 
 				default:
