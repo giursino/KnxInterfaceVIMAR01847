@@ -90,6 +90,7 @@ GLOBAL int LKU_ReceiveLDataMessage(hid_device* pDevice, uint8_t* msg, uint8_t ms
 GLOBAL int LKU_ReceiveMessage(hid_device* pDevice, LKU_KNXMSG_TYPE* msg_type, uint8_t* msg, uint8_t msg_len);
 GLOBAL void LKU_ClearBuffer(hid_device* pDevice);
 
+GLOBAL float DptValueTemp2Float (uint8_t dpt[2]);
 //-END------------------------- Functions Declaration ------------------------//
 
 #endif
