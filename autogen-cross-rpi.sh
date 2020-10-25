@@ -43,6 +43,10 @@ echo -n "*** other cleaning..."
 rm -rf Makefile.in autom4te.cache config.* compile configure depcomp install-sh ltmain missing test-driver aclocal.m4
 echo "ok"
 
+echo "*** setting environment for debugging..."
+export CPPFLAGS="-DDEBUG"
+export CFLAGS="-g -O0"
+
 echo "*** libtolizing..."
 libtoolize --automake
 
@@ -63,15 +67,10 @@ export PKG_CONFIG_LIBDIR=${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/local/lib/p
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT}
 export PKG_CONFIG_PATH=${PKG_CONFIG_LIBDIR}
 
-echo "*** setting DEBUG build..."
-CPPFLAGS="-DDEBUG"
-CFLAGS="-g -O0"
-
 echo "*** configuring..."
 ./configure \
   --host=arm-linux-gnueabihf \
   --with-sysroot=${SYSROOT} \
-  CPPFLAGS="${CPPFLAGS}" \
   CFLAGS="--sysroot=${SYSROOT} ${CFLAGS}" \
   $@
 

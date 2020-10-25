@@ -17,14 +17,11 @@ echo "*** automaking..."
 automake -a
 
 echo "*** setting DEBUG build..."
-CPPFLAGS="-DDEBUG"
-CFLAGS="-g -O0"
+export CPPFLAGS="-DDEBUG"
+export CFLAGS="-g -O0"
 
 echo "*** configuring..."
-./configure \
-  CPPFLAGS="${CPPFLAGS}" \
-  CFLAGS="${CFLAGS}" \
-  $@
+./configure $@
 echo ""
 echo "done."
 exit
