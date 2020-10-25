@@ -74,7 +74,7 @@ LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len
 LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
 	fprintf(stdout, "%s: ", strprefix);
-	for (i=0; i<u8Len; i++){
+	for (i=0; i<(u8Len-1); i++){
 		switch (i) {
 			case 1:
 			case 3:
@@ -90,6 +90,7 @@ LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t 
 		}
 		fprintf(stdout, "%.2X", pMsg[i]);
 	}
+	fprintf(stdout, " %.2X", pMsg[i]);
 	fprintf(stdout, ".\n");
 }
 
