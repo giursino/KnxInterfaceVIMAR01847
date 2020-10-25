@@ -42,7 +42,7 @@ static void test_DPTFloat_04(void **state) {
 
 	uint8_t t_in[2] = {0x0C, 0x1B};
 	float t_out = DptValueTemp2Float(t_in);
-	float t_expected = 21.0f;
+	float t_expected = 21.02f;
 	assert_memory_equal(&t_out, &t_expected, sizeof(float));
 }
 
