@@ -35,6 +35,7 @@ libtool
 *.trs
 test-driver
 tests/test_libknxusb
+tests/test_knxutils
 .dirstamp
 example/01847-temp-reader
 example/tplotd_setup.py
@@ -47,3 +48,4 @@ example/01847-sendmsg-nolib
 *.swp
 *.swo
 .pydevproject
+*.local

@@ -58,6 +58,13 @@ typedef union {
 	uint16_t	glb;
 } LKU_ADDR_TYPE;
 
+typedef enum {
+	LKU_KNXMSG_L_Data,
+	LKU_KNXMSG_L_Busmon,
+	LKU_KNXMSG_L_Raw,
+	LKU_KNXMSG_L_Poll_Data,
+} LKU_KNXMSG_TYPE;
+
 /// Max length of KNX message
 #define LKU_KNX_MSG_LENGTH		22
 //-END-------------------------------- Types ---------------------------------//
@@ -78,8 +85,12 @@ GLOBAL int LKU_SendRawMessage(hid_device* pDevice, const uint8_t* pMsg, uint8_t 
 GLOBAL int LKU_SendGroupValueWrite(hid_device* pDevice, LKU_ADDR_TYPE addr,
 		LKU_DPT_TYPE dpt, const uint8_t* payload, uint8_t len);
 GLOBAL int LKU_ReceiveRawMessage(hid_device* pDevice, uint8_t* pMsg, uint8_t u8MsgLen);
+GLOBAL int LKU_ReceiveLBusmonMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len);
+GLOBAL int LKU_ReceiveLDataMessage(hid_device* pDevice, uint8_t* msg, uint8_t msg_len);
+GLOBAL int LKU_ReceiveMessage(hid_device* pDevice, LKU_KNXMSG_TYPE* msg_type, uint8_t* msg, uint8_t msg_len);
 GLOBAL void LKU_ClearBuffer(hid_device* pDevice);
 
+GLOBAL float DptValueTemp2Float (uint8_t dpt[2]);
 //-END------------------------- Functions Declaration ------------------------//
 
 #endif

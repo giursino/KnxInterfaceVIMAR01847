@@ -6,6 +6,8 @@
 #include <hidapi/hidapi.h>
 
 /* Inclusion of C file module to test! This is useful to test local function */
+#include "cemi.c"
+#include "knxhid.c"
 #include "libknxusb.c"
 
 
@@ -15,7 +17,7 @@ static void null_test_success(void **state) {
 }
 
 
-/* Test della funzione LKU_LData2CEmi */
+/* Test of LKU_LData2CEmi */
 static void test_LKU_LData2CEmi(void **state) {
 
 	uint8_t buf[LKU_KNX_MSG_LENGTH];
@@ -69,7 +71,7 @@ static void test_LKU_LData2CEmi(void **state) {
 }
 
 
-/* Test della funzione LKU_CEmi2LData */
+/* Test of LKU_CEmi2LData */
 static void test_LKU_CEmi2LData(void **state) {
 
 	uint8_t buf[LKU_CEMI_MSG_LENGTH];
@@ -122,6 +124,54 @@ static void test_LKU_CEmi2LData(void **state) {
 	assert_int_equal(retbuf[i++], 0x81);
 }
 
+/* Test of LKU_Decode */
+static void test_LKU_Decode(void **state) {
+
+	KNXHID_Frame buf = { .byte= {
+			// KNX HID Report Header
+			0x01, //ReportId
+			0x13, //PacketInfo
+			0x13, //Datalength
+
+			// KNX HID Report Body
+			0x00, //ProtocolVersion
+			0x08, //HeaderLength
+			0x00, //BodyLength
+			0x0B, //    "
+			0x01, //ProtocolId
+			0x03, //EMIID (cEMI)
+			0x00, //ManufacturerCode
+			0x00, //      "
+
+			// KNX USB Transfer Protocol Body
+			0x29, //EMIMessageCode (29=rx, 11=tx)
+			0x00, //Data
+
+			0xBC, 0xE0, 0x10, 0x01, 0x0C, 0x0A, 0x01, 0x00, 0x81,
+	}};
+
+
+	uint8_t retbuf[LKU_KNX_MSG_LENGTH];
+
+
+	LKU_KNXMSG_TYPE rettype;
+	int ret = LKU_Decode(&buf, &rettype, retbuf, LKU_KNX_MSG_LENGTH);
+
+	assert_int_not_equal(ret, -1);
+	assert_int_equal(ret, 8);
+	assert_int_equal(rettype, LKU_KNXMSG_L_Data);
+
+	uint8_t i;
+	assert_int_equal(retbuf[i++], 0xBC);
+	assert_int_equal(retbuf[i++], 0x10);
+	assert_int_equal(retbuf[i++], 0x01);
+	assert_int_equal(retbuf[i++], 0x0C);
+	assert_int_equal(retbuf[i++], 0x0A);
+	assert_int_equal(retbuf[i++], 0xE1);
+	assert_int_equal(retbuf[i++], 0x00);
+	assert_int_equal(retbuf[i++], 0x81);
+}
+
 
 int main(void) {
 
@@ -129,6 +179,7 @@ int main(void) {
         cmocka_unit_test(null_test_success),
         cmocka_unit_test(test_LKU_LData2CEmi),
         cmocka_unit_test(test_LKU_CEmi2LData),
+        cmocka_unit_test(test_LKU_Decode),
     };
 
     return cmocka_run_group_tests(tests, NULL, NULL);
