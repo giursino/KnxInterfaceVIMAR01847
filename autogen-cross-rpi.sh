@@ -4,7 +4,7 @@ TARGET=ggrasp
 SYSROOT=/mnt/ggrasp
 
 
-echo -n "checking cross gcc..."
+echo -n "*** checking cross gcc..."
 if `arm-linux-gnueabihf-gcc -v > /dev/null 2>&1`; then
 	echo "ok"
 else
@@ -20,7 +20,7 @@ else
 fi
 
 
-echo -n "checking sysroot..."
+echo -n "*** checking sysroot..."
 if [ ! -d ${SYSROOT} ]; then
 	echo "created ${SYSROOT}"
 	mkdir -p ${SYSROOT}
@@ -28,7 +28,7 @@ else
 	echo "ok"
 fi
 
-echo -n "mounting ${SYSROOT}..."
+echo -n "*** mounting ${SYSROOT}..."
 if [ ! -e ${SYSROOT}/usr/bin ]; then
 	sudo mount $TARGET:/ $SYSROOT
 	echo "ok"
@@ -36,26 +36,26 @@ else
 	echo "already mounted"
 fi
 
-echo "maintainer cleaning..."
+echo "*** maintainer cleaning..."
 make maintainer-clean
 
-echo -n "other cleaning..."
+echo -n "*** other cleaning..."
 rm -rf Makefile.in autom4te.cache config.* compile configure depcomp install-sh ltmain missing test-driver aclocal.m4
 echo "ok"
 
-echo "libtolizing..."
+echo "*** libtolizing..."
 libtoolize --automake
 
-echo "aclocaling..."
+echo "*** aclocaling..."
 aclocal ${OECORE_ACLOCAL_OPTS}
 
-echo "autoconfing..."
+echo "*** autoconfing..."
 autoconf
 
-echo "autoheadering..."
+echo "*** autoheadering..."
 autoheader
 
-echo "automaking..."
+echo "*** automaking..."
 automake -a
 
 export PKG_CONFIG_DIR=
@@ -63,10 +63,18 @@ export PKG_CONFIG_LIBDIR=${SYSROOT}/usr/lib/pkgconfig:${SYSROOT}/usr/local/lib/p
 export PKG_CONFIG_SYSROOT_DIR=${SYSROOT}
 export PKG_CONFIG_PATH=${PKG_CONFIG_LIBDIR}
 
-export CFLAGS="--sysroot=${SYSROOT}"
+echo "*** setting DEBUG build..."
+CPPFLAGS="-DDEBUG"
+CFLAGS="-g -O0"
 
-echo "configuring..."
-./configure --host=arm-linux-gnueabihf --with-sysroot=${SYSROOT} $@
+echo "*** configuring..."
+./configure \
+  --host=arm-linux-gnueabihf \
+  --with-sysroot=${SYSROOT} \
+  CPPFLAGS="${CPPFLAGS}" \
+  CFLAGS="--sysroot=${SYSROOT} ${CFLAGS}" \
+  $@
 
+echo ""
 echo "done."
 exit
