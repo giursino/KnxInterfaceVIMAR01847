@@ -109,7 +109,8 @@ ACLOCAL_AMFLAGS=-I ../m4
 	$(PTHREAD_LIBS)
 
 01847_temp_LDFLAGS = \
-	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs
+	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs \
+	-static
 
 01847_temp_CPPFLAGS = \
 	-I$(top_srcdir)/include \
