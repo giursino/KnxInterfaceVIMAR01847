@@ -385,12 +385,14 @@ int main(int argc, char* argv[]) {
 		}
 
 		{
-			static u_int8_t count=0;
+			// Press ENTER to send random data (20-25) to client on 'Test' track
 			SocketData_Type buf;
 			int rc = sizeof(buf);
-			buf.time[0]=count++;
-			buf.value=20 + (rand()%5);
+			time_t t = time(NULL);
+			struct tm *tm = localtime(&t);
 			sprintf(buf.track, "Test");
+			strftime(buf.time, sizeof(buf.time), "%Y-%m-%d %H:%M:%S.0", tm);
+			buf.value=20 + (rand()%5);
 			printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
 
 			if (write(cl, &buf, rc) != rc) {
