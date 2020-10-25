@@ -38,7 +38,6 @@
 
 
 //-START----------------------- Functions Declaration ------------------------//
-LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 //-END------------------------- Functions Declaration ------------------------//
 
 
@@ -59,16 +58,6 @@ LOCAL bool toexit = false;
 
 
 //-START--------------------------- Functions --------------------------------//
-
-/// Print hex message on log
-LOCAL void LogPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
-	uint8_t i=0;
-	fprintf(stdout, "%s: ", strprefix);
-	for (i=0; i<u8Len; i++){
-		fprintf(stdout, "%.2X ", pMsg[i]);
-	}
-	fprintf(stdout, ".\n");
-}
 
 /// Print hex message on recevie buffer
 LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
@@ -92,59 +81,6 @@ LOCAL void PrintReceivedMsg(const char* strprefix, const uint8_t* pMsg, uint8_t 
 	}
 	fprintf(stdout, " %.2X", pMsg[i]);
 	fprintf(stdout, ".\n");
-}
-
-
-// Remove space from string
-LOCAL void RemoveSpace (char* str) {
-	char *write = str, *read = str;
-	do {
-	   if (*read != ' ')
-	       *write++ = *read;
-	} while (*read++);
-}
-
-// Send message
-LOCAL int SendStringMsg (hid_device* pDevice, char* strmsg) {
-	int len, i, res;
-	uint8_t msg[LKU_KNX_MSG_LENGTH];
-
-	RemoveSpace(strmsg);
-
-	if (strmsg == NULL) {
-		return -1;
-	}
-	len = strlen(strmsg);
-	if (len <= 0) {
-		return -1;
-	}
-	if (len % 2) {
-		return -1;
-	}
-	if (len > (LKU_KNX_MSG_LENGTH*2)) {
-		return -1;
-	}
-
-	for (i=0; i<len; i+=2) {
-		char strbyte[3];
-		char *err;
-		strbyte[0]=strmsg[i];
-		strbyte[1]=strmsg[i+1];
-		strbyte[2]='\0';
-		msg[i/2] = (uint8_t) strtoul(strbyte, &err, 16);
-		if (*err != '\0') {
-			return -1;
-		}
-	}
-	len/=2;
-
-	res = LKU_SendRawMessage(pDevice, msg, len);
-	if (res < 0) {
-		return -1;
-	}
-	LogPrintMsg("SendStringMsg", msg, len);
-
-	return len;
 }
 
 /// Thread function to handle the receiving of messages

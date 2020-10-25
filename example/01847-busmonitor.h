@@ -9,8 +9,8 @@
 // -----
 //
 
-#ifndef __01847_TEST_H_
-#define __01847_TEST_H_
+#ifndef __01847_BUSMONITOR_H_
+#define __01847_BUSMONITOR_H_
 
 //-START--------------------------- Definitions ------------------------------//
 
