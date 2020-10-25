@@ -158,7 +158,7 @@ LOCAL float DptValueTemp2Float (uint8_t dpt[2]) {
 	uint8_t e = (uint8_t) ((t_raw & 0x7800) >> 11);
 	float t = (0.01*m) * powf(2,e);
 
-#if DEBUG
+#ifdef DEBUG
 	fprintf(stdout, "* t_raw=0x%.4X\n", t_raw);
 	fprintf(stdout, "* m=%i (0x%.4X)\n", m, (uint16_t) m);
 	fprintf(stdout, "* e=%i (0x%.4X)\n", e, e);
@@ -411,61 +411,61 @@ int main(int argc, char* argv[]) {
 			toexit = true;
 		}
 
-	#if DEBUG
-	{
-		uint8_t tfix[2] = {0x0C, 0x1A};
-		float t = DptValueTemp2Float(tfix);
-		printf("t=%.1f \n\n", t);
-	}
-	{
-		uint8_t tfix[2] = {0x8C, 0x1A};
-		float t = DptValueTemp2Float(tfix);
-		printf("t=%.1f \n\n", t);
-	}
-	{
-		uint8_t tfix[2] = {0x14, 0x1A};
-		float t = DptValueTemp2Float(tfix);
-		printf("t=%.1f \n\n", t);
-	}
-	{
-		uint8_t tfix[2] = {0x0C, 0x1B};
-		float t = DptValueTemp2Float(tfix);
-		printf("t=%.1f \n\n", t);
-	}
+		#ifdef DEBUG
+		{
+			uint8_t tfix[2] = {0x0C, 0x1A};
+			float t = DptValueTemp2Float(tfix);
+			printf("t=%.1f \n\n", t);
+		}
+		{
+			uint8_t tfix[2] = {0x8C, 0x1A};
+			float t = DptValueTemp2Float(tfix);
+			printf("t=%.1f \n\n", t);
+		}
+		{
+			uint8_t tfix[2] = {0x14, 0x1A};
+			float t = DptValueTemp2Float(tfix);
+			printf("t=%.1f \n\n", t);
+		}
+		{
+			uint8_t tfix[2] = {0x0C, 0x1B};
+			float t = DptValueTemp2Float(tfix);
+			printf("t=%.1f \n\n", t);
+		}
 
-	{
-		char* buf = "pippo\n";
-		int rc = strlen(buf);
-		printf("send data [%s, %i bytes] to socket [%i] \n", buf, rc, cl);
+		{
+			char* buf = "pippo\n";
+			int rc = strlen(buf);
+			printf("send data [%s, %i bytes] to socket [%i] \n", buf, rc, cl);
 
-		if (write(cl, buf, rc) != rc) {
-			if (rc > 0)
-				fprintf(stderr, "partial write");
-			else {
-				perror("write error");
-				exit(-1);
+			if (write(cl, buf, rc) != rc) {
+				if (rc > 0)
+					fprintf(stderr, "partial write");
+				else {
+					perror("write error");
+					exit(-1);
+				}
 			}
 		}
-	}
-	#endif
+		#endif
 
-	{
-		static int count=0;
-		SocketData_Type buf;
-		int rc = sizeof(buf);
-		buf.time=(count++);
-		buf.temperature=rand();
-		printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
+		{
+			static u_int8_t count=0;
+			SocketData_Type buf;
+			int rc = sizeof(buf);
+			buf.time[0]=count++;
+			buf.value=rand();
+			printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
 
-		if (write(cl, &buf, rc) != rc) {
-			if (rc > 0)
-				fprintf(stderr, "partial write");
-			else {
-				perror("write error");
-				exit(-1);
+			if (write(cl, &buf, rc) != rc) {
+				if (rc > 0)
+					fprintf(stderr, "partial write");
+				else {
+					perror("write error");
+					exit(-1);
+				}
 			}
 		}
-	}
 
 #endif
 
