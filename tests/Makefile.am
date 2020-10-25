@@ -1,12 +1,12 @@
 # Programs to build
 check_PROGRAMS = \
 	test_libknxusb \
-	test_01847_temp
+	test_knxutils
 
 # Programs to run on "make check"
 TESTS = \
 	test_libknxusb \
-	test_01847_temp
+	test_knxutils
 
 #############################
 test_libknxusb_SOURCES = \
@@ -22,16 +22,17 @@ test_libknxusb_LDADD = \
 #	$(top_builddir)/libknxusb/libknxusb.la
 
 #############################
-test_01847_temp_SOURCES = \
-	test_01847_temp.c
+test_knxutils_SOURCES = \
+	test_knxutils.c
 
-test_01847_temp_CFLAGS = \
+test_knxutils_CFLAGS = \
 	@CMOCKA_CFLAGS@ \
 	-I$(top_srcdir)/include \
-	-I$(top_srcdir)/example
+	-I$(top_srcdir)/libknxusb
 
-test_01847_temp_LDADD = \
-	@CMOCKA_LIBS@
+test_knxutils_LDADD = \
+	@CMOCKA_LIBS@ \
+	-lm
 
 #############################
 

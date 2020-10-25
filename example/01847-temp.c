@@ -387,27 +387,6 @@ int main(int argc, char* argv[]) {
 
 		#ifdef DEBUG
 		{
-			uint8_t tfix[2] = {0x0C, 0x1A};
-			float t = DptValueTemp2Float(tfix);
-			printf("t=%.1f \n\n", t);
-		}
-		{
-			uint8_t tfix[2] = {0x8C, 0x1A};
-			float t = DptValueTemp2Float(tfix);
-			printf("t=%.1f \n\n", t);
-		}
-		{
-			uint8_t tfix[2] = {0x14, 0x1A};
-			float t = DptValueTemp2Float(tfix);
-			printf("t=%.1f \n\n", t);
-		}
-		{
-			uint8_t tfix[2] = {0x0C, 0x1B};
-			float t = DptValueTemp2Float(tfix);
-			printf("t=%.1f \n\n", t);
-		}
-
-		{
 			char* buf = "pippo\n";
 			int rc = strlen(buf);
 			printf("send data [%s, %i bytes] to socket [%i] \n", buf, rc, cl);
