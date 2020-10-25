@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 TARGET=ggrasp
 SYSROOT=/mnt/ggrasp
@@ -43,9 +43,10 @@ echo -n "*** other cleaning..."
 rm -rf Makefile.in autom4te.cache config.* compile configure depcomp install-sh ltmain missing test-driver aclocal.m4
 echo "ok"
 
-echo "*** setting environment for debugging..."
-export CPPFLAGS="-DDEBUG"
-export CFLAGS="-g -O0"
+if [ -e setup-environment.local ]; then
+  echo "*** setting local environment..."
+  source setup-environment.local
+fi
 
 echo "*** libtolizing..."
 libtoolize --automake

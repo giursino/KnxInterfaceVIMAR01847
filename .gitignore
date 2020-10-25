@@ -47,3 +47,4 @@ example/01847-sendmsg-nolib
 *.swp
 *.swo
 .pydevproject
+*.local

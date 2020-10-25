@@ -70,5 +70,36 @@ In this project I added the library to use another KNX interface: the "KNX Tiny 
 
 Please check my other repo: [knxtinyserial](https://github.com/giursino/knxtinyserial).
 
+# Development
 
+## Debug
 
+To debug, in the root of project, create a file `setup-environment.local` like this:
+```
+export CPPFLAGS="-DDEBUG -DNO_DAEMON"
+export CFLAGS="-g -O0"
+```
+
+This file is sourced inside the `autogen*.sh` scripts.
+
+To check if this file works correctly, run:
+```
+grep CPPFLAGS config.status
+grep CFLAGS  config.status
+```
+
+## Deploy
+
+To deploy and test on TARGET `raspberry pi`, run script `deploy.sh` that copy all ARM binary inside `tmp` folder of TARGET.
+```
+HOST> ./deploy.sh
+TARGET> cd /tmp
+TARGET> LD_LIBRARY_PATH=/tmp 01847-busmonitor
+```
+
+## Unit-test
+
+To run the unit-test (CMOCKA required):
+```
+make check
+```
