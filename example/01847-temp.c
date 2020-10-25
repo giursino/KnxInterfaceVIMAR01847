@@ -168,10 +168,15 @@ LOCAL void* ThreadKnxRx(void *arg) {
 
 		// Send to socket
 		SocketData_Type txbuf;
-		bool tosend = true;  /* TODO change to false! */
-		txbuf.value = 0; /* TODO remove*/
+		bool tosend = false;
+		txbuf.value = 0;
 		sprintf(txbuf.track, "Unknown");
 		strftime(txbuf.time, sizeof(txbuf.time), "%Y-%m-%d %H:%M:%S.0", tm);
+
+#ifdef DEBUG
+		// send every message received to the socket
+		tosend = true;
+#endif
 
 		// Ta zona giorno
 		if ((rxbuf[3]==0x21) && (rxbuf[4]==0x77)) {
