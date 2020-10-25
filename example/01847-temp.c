@@ -385,29 +385,13 @@ int main(int argc, char* argv[]) {
 			toexit = true;
 		}
 
-		#ifdef DEBUG
-		{
-			char* buf = "pippo\n";
-			int rc = strlen(buf);
-			printf("send data [%s, %i bytes] to socket [%i] \n", buf, rc, cl);
-
-			if (write(cl, buf, rc) != rc) {
-				if (rc > 0)
-					fprintf(stderr, "partial write");
-				else {
-					perror("write error");
-					exit(-1);
-				}
-			}
-		}
-		#endif
-
 		{
 			static u_int8_t count=0;
 			SocketData_Type buf;
 			int rc = sizeof(buf);
 			buf.time[0]=count++;
-			buf.value=rand();
+			buf.value=20 + (rand()%5);
+			sprintf(buf.track, "Test");
 			printf("send data [%p, %i bytes] to socket [%i] \n", &buf, rc, cl);
 
 			if (write(cl, &buf, rc) != rc) {
