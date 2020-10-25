@@ -38,11 +38,15 @@ struct LKU_INSTANCE_ {
 
 
 //-START----------------------- Functions Declaration ------------------------//
+#ifdef DEBUG
+LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
+#else
+#define DebugPrintMsg(...) {;}
+#endif
 LOCAL int LKU_LData2CEmi(const uint8_t* pMsgLData, uint8_t u8MsgLDataLen,
 		uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen);
 LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 		uint8_t* pMsgLData, uint8_t u8MsgLDataLen);
-LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len);
 LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode);
 LOCAL int LKU_Decode(const KNXHID_Frame* knx_hid_frame, LKU_KNXMSG_TYPE* msg_type,
 		uint8_t* msg, uint8_t msg_len);
@@ -295,6 +299,7 @@ GLOBAL int LKU_ReceiveMessage(hid_device* pDevice, LKU_KNXMSG_TYPE* msg_type, ui
 		fprintf(stderr, "Error on reading raw message\n");
 		return -1;
 	}
+	DebugPrintMsg("<- ", (u_int8_t*) (&knx_hid_frame), res);
 
 	return LKU_Decode(&knx_hid_frame, msg_type, msg, msg_len);
 
@@ -477,6 +482,7 @@ LOCAL int LKU_CEmi2LData(const uint8_t* pMsgCEmi, uint8_t u8MsgCEmiLen,
 	return mlen;
 }
 
+#ifdef DEBUG
 LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8Len) {
 	uint8_t i=0;
 	printf("%s: ", strprefix);
@@ -485,6 +491,7 @@ LOCAL void DebugPrintMsg(const char* strprefix, const uint8_t* pMsg, uint8_t u8L
 	}
 	printf(".\n");
 }
+#endif
 
 LOCAL int CommunicationMode(hid_device* pDevice, LKU_COMM_MODE mode) {
 
