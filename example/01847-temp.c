@@ -396,16 +396,13 @@ int main(int argc, char* argv[]) {
 
 	printf("Monitoring and sleeping...\n");
 
-#ifndef DAEMON
+#ifdef NO_DAEMON
 	printf("Press 'q' or Ctrl-C or kill to to quit...\n");
 #endif
 
 	while(!toexit) {
 
-#ifdef DAEMON
-		sleep(1);
-
-#else
+#ifdef NO_DAEMON
 		ch = getchar();
 		if (ch == 'q') {
 			toexit = true;
@@ -467,6 +464,8 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+#else
+		sleep(1);
 #endif
 
 	}

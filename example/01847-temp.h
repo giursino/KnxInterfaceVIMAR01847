@@ -23,7 +23,10 @@
 //#define CONNECTIONLESS
 #define CONNECTION_ORIENTED
 
-#define DAEMON
+#ifdef NO_DAEMON
+#warning "NO_DAEMON defined: application works better in daemon mode! Please remove it from build system."
+#endif
+
 //-END----------------------------- Definitions ------------------------------//
 
 
