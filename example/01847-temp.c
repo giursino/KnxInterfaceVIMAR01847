@@ -132,7 +132,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		}
 
 		// Ta zona notte
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x87)) {
+		if ((rxbuf[3]==0x21) && (rxbuf[4]==0x9D)) {
 			sprintf(txbuf.track, "Ta_notte");
 			txbuf.value = DptValueTemp2Float(&rxbuf[8]);
 			fprintf(stdout, "*** Zona notte, Ta=%.1f ***\n", txbuf.value);
@@ -140,7 +140,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		}
 
 		// Valvola zona giorno
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0x6F)) {
+		if ((rxbuf[3]==0x21) && (rxbuf[4]==0x8C)) {
 			sprintf(txbuf.track, "Valvola_giorno");
 			if (rxbuf[7]==0x84) {
 				txbuf.value = 1;
@@ -153,7 +153,7 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		}
 
 		// Valvola zona notte
-		if ((rxbuf[3]==0x0C) && (rxbuf[4]==0xAB)) {
+		if ((rxbuf[3]==0x21) && (rxbuf[4]==0xB2)) {
 			sprintf(txbuf.track, "Valvola_notte");
 			if (rxbuf[7]==0x81) {
 				txbuf.value = 1;
