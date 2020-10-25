@@ -1,6 +1,6 @@
 # KNX Interface VIMAR 01847
 
-This project enables the access on Linux box to the KNX bus using the [USB KNX interface "01847"](https://www.vimar.com/it/it/catalog/product/index/code/01993) by [VIMAR](www.vimar.com). 
+This project enables the access on Linux box to the KNX bus using the [USB KNX interface "01847"](https://www.vimar.com/it/it/catalog/product/index/code/01993) by [VIMAR](www.vimar.com).
 
 Now with the "C" library `libknxusb` you can send and receive messages on Linux box with the VIMAR USB KNX interface "01847".
 
@@ -31,14 +31,14 @@ make install
 1. Copy udev rules: `sudo cp udev/99-vimar-01847.rules /etc/udev/rules.d`
 2. Unplug Vimar 01847 device
 3. Restart udev: `sudo /etc/init.d/udev restart`
-4. Plug Vimar 01847 device 
+4. Plug Vimar 01847 device
 5. Check if `/dev/vimar-01847` exists when Vimar 01847 is plugged.
 6. If interface was not found, restart the system.
 
 ## Usage
 
 ### KNX bus monitor
-Run `01847-busmonitor` program to show the knx bus messages. 
+Run `01847-busmonitor` program to show the knx bus messages.
 This program permits also to send messages on the bus.
 
 Commands:
@@ -51,7 +51,7 @@ This program does not use the `libknxusb` library.
 
 ### KNX send message
 Run `01847-sendmsg "<MSG>"` program to send a KNX raw message from command line.
-The `<MSG>` must be format in hex value, example: 
+The `<MSG>` must be format in hex value, example:
 * `01847-sendmsg "BC 1001 AABB E1 00 81"`: send a A_GroupValueWrite to group `0xAABB` with value `1`
 * `01847-sendmsg "BC 1001 1002 60 03D7 16 FF 10 01 FF"`: send a A_PropertyValueWrite message
 
@@ -64,7 +64,7 @@ The client `tplotd.py` written with Python it connects to the socket and the sen
 Another client `tplotd-file.py` written with Python it connects to the socket and the write the temperature data to `data.csv` CSV file.
 
 ## KNX Tiny Interface 810 library
-In this project I added the library to use another KNX interface: the "KNX Tiny Interface 810" by Weinzierl Engineering GmbH. 
+In this project I added the library to use another KNX interface: the "KNX Tiny Interface 810" by Weinzierl Engineering GmbH.
 
 **But it is only experimental.**
 

@@ -26,7 +26,7 @@ AX_WITH_CURSES
 
 
 AC_CONFIG_FILES(
-	Makefile 
+	Makefile
 	example/Makefile
 	libknxusb/Makefile
 	libknx810/Makefile
