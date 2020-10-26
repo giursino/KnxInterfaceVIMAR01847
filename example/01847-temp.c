@@ -169,8 +169,8 @@ LOCAL void* ThreadKnxRx(void *arg) {
 		if (tosend) {
 			fprintf(stdout, "Sending data: time=\"%s\" track=\"%s\" value=%f\n", txbuf.time, txbuf.track, txbuf.value);
 			if ((res = write(socket, &txbuf, sizeof(txbuf))) != sizeof(txbuf)) {
-				if (res)
-					fprintf(stderr, "partial write");
+				if (res > 0)
+					fprintf(stderr, "partial write\n");
 				else {
 					perror("write error");
 					exit(-1);
@@ -188,6 +188,10 @@ LOCAL void SignalHandler(int signo) {
 		case SIGINT:
 		case SIGTERM:
 			printf("Catched signal %i.\n", signo);
+			toexit=true;
+			break;
+		case SIGPIPE:
+			printf("Exit cause client disconnected.\n");
 			toexit=true;
 			break;
 		default:
@@ -311,6 +315,10 @@ int main(int argc, char* argv[]) {
 		perror("Cannot catch SIGTERM");
 		exit(1);
 	}
+	if (signal(SIGPIPE, SignalHandler) == SIG_ERR) {
+		perror("Cannot catch SIGPIPE");
+		exit(1);
+	}
 
 	printf("Monitoring and sleeping...\n");
 
@@ -339,7 +347,7 @@ int main(int argc, char* argv[]) {
 
 			if (write(cl, &buf, rc) != rc) {
 				if (rc > 0)
-					fprintf(stderr, "partial write");
+					fprintf(stderr, "partial write\n");
 				else {
 					perror("write error");
 					exit(-1);
