@@ -357,6 +357,16 @@ int main(int argc, char* argv[]) {
 
 #else
 		sleep(1);
+
+		// keep-alive
+		static int keealive_tmo = 0;
+		if ((keealive_tmo--) == 0) {
+			keealive_tmo = 10;
+			if (write(cl, "", 1) != 1) {
+				fprintf(stderr, "client disconnected\n");
+				toexit = true;
+			}
+		}
 #endif
 
 	}

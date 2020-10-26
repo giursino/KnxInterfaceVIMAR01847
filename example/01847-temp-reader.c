@@ -99,7 +99,11 @@ int main(int argc, char *argv[]) {
 			SocketData_Type buf;
 			rc = read(fd, &buf, sizeof(buf));
 			if (rc > 0) {
-				fprintf(stdout, "read %i bytes: {time: \"%s\", track: \"%s\", value: \"%f\"}\n", rc, buf.time, buf.track, buf.value);
+				// ignore keep-alive
+				if ((rc==1) && (*((char*)(&buf))=='\0')) {printf("kea\n"); continue;}
+				// print received value
+				fprintf(stdout, "read %i bytes: {time: \"%s\", track: \"%s\", value: \"%f\"}\n", \
+						rc, buf.time, buf.track, buf.value);
 			}
 			else {
 				perror("read error");
