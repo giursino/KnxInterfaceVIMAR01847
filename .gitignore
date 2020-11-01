@@ -49,3 +49,4 @@ example/01847-sendmsg-nolib
 *.swo
 .pydevproject
 *.local
+*.user
