@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(KnxInterfaceVIMAR01847, 1.1)
+AC_INIT(KnxInterfaceVIMAR01847, 1.2)
 
 
 AC_CANONICAL_SYSTEM
