@@ -7,8 +7,6 @@ bin_PROGRAMS= \
 	01847-busmonitor-nolib \
 	01847-sendmsg \
 	01847-sendmsg-nolib \
-	01847-temp \
-	01847-temp-reader \
 	KNXTinySerial-test \
 	KNXTinySerial-libtest
 
@@ -96,37 +94,6 @@ ACLOCAL_AMFLAGS=-I ../m4
 
 
 # ------------------------------------------
-# Example application to monitor temperature using KNX Interface VIMAR 01847
-# ------------------------------------------
-01847_temp_SOURCES = \
-	01847-temp.c \
-	01847-temp.h \
-	common.c \
-	common.h
-
-01847_temp_LDADD = \
-	$(top_builddir)/libknxusb/libknxusb.la \
-	$(PTHREAD_LIBS)
-
-01847_temp_LDFLAGS = \
-	-rpath `cd $(top_builddir);pwd`/libknxusb/.libs \
-	-static
-
-01847_temp_CPPFLAGS = \
-	-I$(top_srcdir)/include \
-	$(PTHREAD_CFLAGS)
-
-
-
-# ------------------------------------------
-# Example application to test 01847-temp application
-# ------------------------------------------
-01847_temp_reader_SOURCES = \
-	01847-temp-reader.c
-
-
-
-# ------------------------------------------
 # Example application to connect to KNX Tiny Serial 810 hardware
 # ------------------------------------------
 KNXTinySerial_test_SOURCES = \
@@ -155,8 +122,7 @@ KNXTinySerial_libtest_CPPFLAGS = \
 
 
 # Data files to be included in distro but not to be installed.
-EXTRA_DIST = \
-	tplotd.py
+EXTRA_DIST =
 
 
 MAINTAINERCLEANFILES = \
@@ -165,7 +131,5 @@ MAINTAINERCLEANFILES = \
 	01847-busmonitor-nolib \
 	01847-sendmsg \
 	01847-sendmsg-nolib \
-	01847-temp \
-	01847-temp-reader \
 	KNXTinySerial-test \
 	KNXTinySerial-libtest

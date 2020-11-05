@@ -11,7 +11,6 @@ This project includes many code examples to use the library.
 sudo apt-get install build-essential autotools-dev autoconf automake autoconf-archive gnu-standards autoconf-doc libtool
 sudo apt-get install libcmocka0 libcmocka-dev
 sudo apt-get install libhidapi-hidraw0 libhidapi-dev libhidapi-hidraw0-dbg udev
-sudo apt-get install python-plotly
 sudo apt-get install libncurses5-dev
 ```
 
@@ -54,14 +53,6 @@ Run `01847-sendmsg "<MSG>"` program to send a KNX raw message from command line.
 The `<MSG>` must be format in hex value, example:
 * `01847-sendmsg "BC 1001 AABB E1 00 81"`: send a A_GroupValueWrite to group `0xAABB` with value `1`
 * `01847-sendmsg "BC 1001 1002 60 03D7 16 FF 10 01 FF"`: send a A_PropertyValueWrite message
-
-### Temperature monitor (socket)
-The example program `01847-temp` has a client/server architecture that permits to monitor a particular message on knx bus that is the temperature datapoint.
-The server use the `libknxusb` library to hear the temperature knx datapoint and sends it to `/tmp/01847-temp` socket.
-
-The client `tplotd.py` written with Python it connects to the socket and the send the temperature data to the online datastore to plot it, using [plot.ly](plot.ly).
-
-Another client `tplotd-file.py` written with Python it connects to the socket and the write the temperature data to `data.csv` CSV file.
 
 ## KNX Tiny Interface 810 library
 In this project I added the library to use another KNX interface: the "KNX Tiny Interface 810" by Weinzierl Engineering GmbH.
