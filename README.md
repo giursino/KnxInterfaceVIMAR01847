@@ -103,3 +103,10 @@ To run the unit-test (CMOCKA required):
 ```
 make check
 ```
+
+## Release
+
+To release a new version:
+* bump version on `AC_INIT` inside `configure.ac`
+* run `make distcheck`
+* copy `.tar.gz` on GitHub release and create a TAG
