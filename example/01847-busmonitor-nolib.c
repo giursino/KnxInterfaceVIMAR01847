@@ -545,7 +545,6 @@ int main(int argc, char* argv[])
 			printf("%s \t", timebuffer);
 			int len=buf[2]+3;
       const int start = 20;
-      const int crc = start + 7 + (buf[start+5] & 0x0F);
 			for (i = start; i < len; i++) {
 				if (i == start+0) {
             // ctrl
