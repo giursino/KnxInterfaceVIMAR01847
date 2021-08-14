@@ -544,33 +544,35 @@ int main(int argc, char* argv[])
 			strftime(timebuffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
 			printf("%s \t", timebuffer);
 			int len=buf[2]+3;
-			for (i = 0; i < len; i++) {
-				switch (i) {
-					case 13:
-						// control field
-						printf("\t");
-					case 14:
+      const int start = 20;
+      const int crc = start + 7 + (buf[start+5] & 0x0F);
+			for (i = start; i < len; i++) {
+				if (i == start+0) {
+            // ctrl
 						printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
-						break;
-					case 15:
-					case 16:
+				}
+        else if ((i == start+1) || (i == start+2)) {
 						// src addr
 						printf(ANSI_COLOR_GREEN "%.2hhx " ANSI_COLOR_RESET, buf[i]);
-						break;
-					case 17:
-					case 18:
+        }
+        else if ((i == start+3) || (i == start+4)) {
 						// dst addr
 						printf(ANSI_COLOR_RED "%.2hhx " ANSI_COLOR_RESET, buf[i]);
-						break;
-					case 19:
-					{
+        }
+        else if (i == start+5) {
 						// len
 						printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
-						break;
-					}
-					default:
+        }
+        else if ((i > start+7) && (i < len-1)) {
+            // data
+						printf(ANSI_COLOR_MAGENTA "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+        }
+        else if (i == (len-1)) {
+            // crc
+						printf(ANSI_COLOR_YELLOW "%.2hhx " ANSI_COLOR_RESET, buf[i]);
+        }
+        else {
 						printf("%.2hhx ", buf[i]);
-						break;
 				}
 			}
 			puts("");
